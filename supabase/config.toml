@@ -1,0 +1,31 @@
+project_id = "tqnalbpqbitabuxuldhq"
+
+[functions.create-profile]
+verify_jwt = true
+
+[functions.start-mining]
+verify_jwt = true
+
+[functions.claim-mining]
+verify_jwt = true
+
+[functions.upgrade-machine]
+verify_jwt = true
+
+[functions.upgrade-farm]
+verify_jwt = true
+
+[functions.complete-mission]
+verify_jwt = true
+
+[functions.update-streak]
+verify_jwt = true
+
+[functions.activate-referral]
+verify_jwt = true
+
+[functions.get-dashboard]
+verify_jwt = true
+
+[functions.request-withdrawal]
+verify_jwt = true
