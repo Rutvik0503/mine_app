@@ -30,9 +30,7 @@ class AdsService {
   static const String _interstitialAndroid = 'ca-app-pub-5350317534812840/6384832485';
   static const String _appOpenAndroid = 'ca-app-pub-5350317534812840/6760412019';
   static const String _bannerAndroid = 'ca-app-pub-5350317534812840/2672818183';
-  // Fill in once the "Native advanced" ad unit exists in AdMob - until then
-  // release builds simply show no native ads (never test ads).
-  static const String _nativeAndroid = '';
+  static const String _nativeAndroid = 'ca-app-pub-5350317534812840/5323648202';
 
   static bool get _isIOS => defaultTargetPlatform == TargetPlatform.iOS;
   static bool get _useRealAndroidUnits => kReleaseMode && !_isIOS;
@@ -142,12 +140,8 @@ class AdsService {
   String get appOpenUnitId =>
       _isIOS ? _testAppOpenIOS : (_useRealAndroidUnits ? _appOpenAndroid : _testAppOpenAndroid);
 
-  /// Null when there's no real native unit for a release build yet.
-  String? get nativeUnitId {
-    if (_isIOS) return _testNativeIOS;
-    if (!_useRealAndroidUnits) return _testNativeAndroid;
-    return _nativeAndroid.isEmpty ? null : _nativeAndroid;
-  }
+  String? get nativeUnitId =>
+      _isIOS ? _testNativeIOS : (_useRealAndroidUnits ? _nativeAndroid : _testNativeAndroid);
 
   String get bannerUnitId =>
       _isIOS ? _testBannerIOS : (_useRealAndroidUnits ? _bannerAndroid : _testBannerAndroid);
