@@ -32,7 +32,7 @@ class MissionsController extends GetxController {
     try {
       await _missionRepository.claimReward(mission.id);
       await AnalyticsService.logMissionComplete(mission.missionId);
-      AppSnackbar.success('Mission reward claimed!');
+      AppSnackbar.success('Mission reward claimed!'.tr);
       await load();
     } catch (e) {
       AppSnackbar.error(e.toString());

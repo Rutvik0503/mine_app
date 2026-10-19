@@ -2,6 +2,10 @@ import 'package:get/get.dart';
 import '../../features/achievements/bindings/achievements_binding.dart';
 import '../../features/achievements/view/achievements_view.dart';
 import '../../features/auth/bindings/auth_binding.dart';
+import '../../features/farm/bindings/machine_plan_binding.dart';
+import '../../features/farm/view/machine_plan_view.dart';
+import '../../features/spin/bindings/spin_binding.dart';
+import '../../features/spin/view/spin_view.dart';
 import '../../features/auth/forgot_password/view/forgot_password_view.dart';
 import '../../features/auth/login/view/login_view.dart';
 import '../../features/auth/signup/view/signup_view.dart';
@@ -20,9 +24,14 @@ import '../../features/onboarding/bindings/onboarding_binding.dart';
 import '../../features/onboarding/view/onboarding_view.dart';
 import '../../features/referral/view/referral_view.dart';
 import '../../features/settings/bindings/settings_binding.dart';
+import '../../features/settings/view/legal_page_view.dart';
 import '../../features/settings/view/settings_view.dart';
+import '../../features/splash/view/maintenance_view.dart';
+import '../../features/splash/view/update_required_view.dart';
 import '../../features/splash/bindings/splash_binding.dart';
 import '../../features/splash/view/splash_view.dart';
+import '../../features/store/bindings/store_binding.dart';
+import '../../features/store/view/store_view.dart';
 import '../../features/streak/view/streak_view.dart';
 import 'app_routes.dart';
 
@@ -59,6 +68,12 @@ class AppPages {
       binding: MachineBinding(),
     ),
     GetPage(
+      name: AppRoutes.machinePlans,
+      page: () => const MachinePlanView(),
+      binding: MachinePlanBinding(),
+    ),
+    GetPage(name: AppRoutes.spin, page: () => const SpinView(), binding: SpinBinding()),
+    GetPage(
       name: AppRoutes.missions,
       page: () => const MissionsView(),
       binding: MissionsBinding(),
@@ -89,5 +104,9 @@ class AppPages {
       page: () => const SettingsView(),
       binding: SettingsBinding(),
     ),
+    GetPage(name: AppRoutes.store, page: () => const StoreView(), binding: StoreBinding()),
+    GetPage(name: AppRoutes.legalPage, page: () => const LegalPageView()),
+    GetPage(name: AppRoutes.maintenance, page: () => const MaintenanceView()),
+    GetPage(name: AppRoutes.updateRequired, page: () => const UpdateRequiredView()),
   ];
 }

@@ -1,6 +1,15 @@
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
+ * PostgREST filter for user_machines rows that still count towards
+ * hashrate: owned machines (expires_at null) plus rentals that haven't run
+ * out yet. Use with `.or(activeMachineFilter())`.
+ */
+export function activeMachineFilter(now = new Date()): string {
+  return `expires_at.is.null,expires_at.gt.${now.toISOString()}`;
+}
+
+/**
  * Recomputes and persists profiles.total_hashrate from the user's current
  * machines, farm multiplier, level and active boosts (docs section 14).
  * Call this after anything that changes hashrate inputs (upgrades, new
@@ -13,7 +22,8 @@ export async function recomputeTotalHashrate(admin: SupabaseClient, userId: stri
     .from("user_machines")
     .select("current_hashrate")
     .eq("user_id", userId)
-    .eq("status", "active");
+    .eq("status", "active")
+    .or(activeMachineFilter());
   const { data: activeBoosts } = await admin
     .from("user_boosts")
     .select("boosts(multiplier, type)")
@@ -26,7 +36,9 @@ export async function recomputeTotalHashrate(admin: SupabaseClient, userId: stri
   const userMultiplier = 1 + Math.min(profile?.level ?? 1, 100) * 0.005;
   const boostMultiplier = (activeBoosts ?? []).reduce((mult: number, ub: any) => {
     const boost = ub.boosts;
-    if (boost?.type === "mining" || boost?.type === "efficiency") return mult * Number(boost.multiplier ?? 1);
+    if (boost?.type === "mining" || boost?.type === "efficiency" || boost?.type === "lucky") {
+      return mult * Number(boost.multiplier ?? 1);
+    }
     return mult;
   }, 1);
 

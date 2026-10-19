@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/common_widget/app_button.dart';
 import '../../../core/common_widget/app_text.dart';
+import '../../../core/common_widget/mining_visuals.dart';
 import '../../../core/constant/app_color.dart';
 import '../view_model/onboarding_controller.dart';
 
-const _icons = {
-  'agriculture': Icons.agriculture_rounded,
-  'bolt': Icons.bolt_rounded,
-  'checklist': Icons.checklist_rounded,
-  'emoji_events': Icons.emoji_events_rounded,
-};
+Widget _hero(String key) {
+  switch (key) {
+    case 'agriculture':
+      return const SwingingPickaxe(size: 74, color: AppColor.primary);
+    case 'bolt':
+      return const SpinningGear(size: 78, color: AppColor.primary, seconds: 5);
+    case 'checklist':
+      return const PulseGlow(child: Icon(Icons.toll_rounded, size: 64, color: AppColor.warning));
+    default:
+      return const PulseGlow(child: Icon(Icons.emoji_events_rounded, size: 64, color: AppColor.warning));
+  }
+}
 
 class OnboardingView extends GetView<OnboardingController> {
   const OnboardingView({super.key});
@@ -27,7 +34,7 @@ class OnboardingView extends GetView<OnboardingController> {
               alignment: Alignment.topRight,
               child: TextButton(
                 onPressed: controller.finish,
-                child: const AppText('Skip', color: AppColor.textSecondary),
+                child: AppText('Skip'.tr, color: AppColor.textSecondary),
               ),
             ),
             Expanded(
@@ -50,13 +57,13 @@ class OnboardingView extends GetView<OnboardingController> {
                             shape: BoxShape.circle,
                             border: Border.all(color: AppColor.border),
                           ),
-                          child: Icon(_icons[slide.icon], size: 60, color: AppColor.primary),
+                          child: Center(child: _hero(slide.icon)),
                         ),
                         const SizedBox(height: 36),
-                        AppText.heading(slide.title, align: TextAlign.center),
+                        AppText.heading(slide.title.tr, align: TextAlign.center),
                         const SizedBox(height: 12),
                         AppText(
-                          slide.description,
+                          slide.description.tr,
                           align: TextAlign.center,
                           color: AppColor.textSecondary,
                         ),
@@ -89,7 +96,7 @@ class OnboardingView extends GetView<OnboardingController> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Obx(
                 () => AppButton(
-                  label: controller.isLast ? 'Get Started' : 'Next',
+                  label: (controller.isLast ? 'Get Started' : 'Next').tr,
                   onPressed: () {
                     if (controller.isLast) {
                       controller.finish();

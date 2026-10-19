@@ -5,4 +5,6 @@ class BoostRepository {
   final BoostService _service = BoostService();
 
   Future<List<UserBoostModel>> activeBoosts() => _service.fetchActiveBoosts();
+
+  Future<String> grantAdBoost() => _service.grantAdBoost();
 }

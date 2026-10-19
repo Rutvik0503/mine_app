@@ -10,6 +10,14 @@ class ApiConstant {
   static const String supabaseAnonKey =
       'sb_publishable_ChUZddTxDAGZ1z3SbvwHEw_l3_zWX8Y';
 
+  /// Google OAuth "Web application" Client ID (NOT the Android client ID).
+  /// Required for google_sign_in to return a usable idToken on Android, and
+  /// must match the Client ID entered in Supabase Auth > Providers > Google.
+  /// See README "Google Sign-In setup".
+  static const String googleWebClientId =
+      '1094723467852-jkmlalossbmcpafht1m7nvsso8j16csp.apps.googleusercontent.com';
+
+
   // Edge Functions (supabase/functions/*)
   static const String fnCreateProfile = 'create-profile';
   static const String fnStartMining = 'start-mining';
@@ -21,4 +29,11 @@ class ApiConstant {
   static const String fnActivateReferral = 'activate-referral';
   static const String fnGetDashboard = 'get-dashboard';
   static const String fnRequestWithdrawal = 'request-withdrawal';
+  static const String fnGrantAdBoost = 'grant-ad-boost';
+  static const String fnExtendMiningSession = 'extend-mining-session';
+  static const String fnRentMachine = 'rent-machine';
+  static const String fnSpinWheel = 'spin-wheel';
+  static const String fnDeleteAccount = 'delete-account';
+  static const String fnVerifyPlayPurchase = 'verify-play-purchase';
+  static const String fnGrantAdReward = 'grant-ad-reward';
 }

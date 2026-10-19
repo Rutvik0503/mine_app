@@ -48,8 +48,14 @@ dependencies:
   # Monetization (optional - requires AdMob app id, see README)
   google_mobile_ads: ^5.1.0
 
-  # Crash monitoring (optional - requires Sentry DSN, see README)
-  sentry_flutter: ^8.9.0
+  # Real-money purchases - Google Play Billing (coin packs + Extra Mining
+  # Time), verified server-side by verify-play-purchase.
+  in_app_purchase: ^3.3.1
+
+  # Crash reports
+  firebase_crashlytics: ^4.3.10
+  timezone: ^0.10.1
+  flutter_timezone: ^5.1.1
 
 dev_dependencies:
   flutter_test:

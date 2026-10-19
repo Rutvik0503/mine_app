@@ -14,11 +14,11 @@ class AchievementsView extends GetView<AchievementsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
-      appBar: const PrimaryAppBar(title: 'Achievements'),
+      appBar: PrimaryAppBar(title: 'Achievements'.tr),
       body: Obx(() {
         if (controller.isLoading.value) return const LoadingOverlay();
         if (controller.all.isEmpty) {
-          return const EmptyStateWidget(message: 'No achievements yet.', icon: Icons.emoji_events_rounded);
+          return EmptyStateWidget(message: 'No achievements yet.'.tr, icon: Icons.emoji_events_rounded);
         }
         return GridView.builder(
           padding: const EdgeInsets.all(20),

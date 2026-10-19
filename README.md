@@ -69,20 +69,117 @@ profile) work as soon as the Supabase backend above is set up. The following
 are wired in but need your own credentials before they do anything (the app
 runs fine without them - they fail silently/no-op until configured):
 
-- **Google/Apple Sign-In** - create OAuth clients in Google Cloud Console /
-  Apple Developer, then enable those providers in Supabase Auth →
-  Providers. `google_sign_in` / `sign_in_with_apple` are already in
-  `pubspec.yaml` and `LoginController.loginWithGoogle()`.
+- **Google Sign-In** - see "Google Sign-In setup" below.
+- **Apple Sign-In** - button is wired in (login screen, shows an honest
+  "requires an Apple Developer account" message) but not functional yet -
+  see "Apple Sign-In setup" below.
 - **Firebase** (push notifications, analytics) - create a Firebase project,
   drop `google-services.json` into `android/app/`, `GoogleService-Info.plist`
-  into `ios/Runner/`, and call `Firebase.initializeApp()` +
-  `PushNotificationService.init()` / `AnalyticsService.markReady()` at the top
-  of `main()`.
-- **AdMob** - create an AdMob app, replace the test ad unit IDs in
-  `lib/core/services/ads_service.dart`, and add your AdMob App ID to
-  `android/app/src/main/AndroidManifest.xml` / `ios/Runner/Info.plist`.
+  into `ios/Runner/`, and call `Firebase.initializeApp()` before
+  `runApp()` in `main()`. `PushNotificationService.init()` is already called
+  there and `AnalyticsService` calls are already wired throughout the app -
+  both are safe no-ops until the Firebase config files above exist. Once
+  Firebase works, device tokens save themselves automatically after login
+  (`save_device_token` RPC → `device_tokens` table).
+- **AdMob** - `AndroidManifest.xml`/`Info.plist` already carry Google's
+  public TEST AdMob App ID (required or the app crashes on launch - see
+  `google_mobile_ads` docs). Before release: create a real AdMob app, replace
+  the test ad unit IDs in `lib/core/services/ads_service.dart`, and the test
+  App ID in both manifests.
 - **Sentry** - create a Sentry project and wrap `runApp()` with
   `SentryFlutter.init` using your DSN.
+
+### Google Sign-In setup
+
+Email/password auth works out of the box; the "Continue with Google" button
+shows "not configured yet" until you do this (it needs a Google Cloud
+project, which only you can create):
+
+1. **Google Cloud Console** → APIs & Services → Credentials → Create
+   Credentials → OAuth client ID, twice:
+   - **Web application** - no redirect URI needed for this flow. Copy its
+     Client ID.
+   - **Android** - package name `com.virtualminingempire.app`, SHA-1 certificate
+     fingerprint (debug keystore, already extracted for you):
+     `A9:95:F0:37:10:A8:10:DB:AB:6D:53:BC:40:28:BA:39:5B:13:28:B6`
+     (get this yourself anytime with
+     `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android`;
+     you'll need a second Android client with your **release** keystore's
+     SHA-1 before shipping to Play Store).
+2. **Supabase Dashboard** → Authentication → Providers → Google → enable it,
+   paste the **Web** client's Client ID and Client Secret.
+3. **This repo**: paste the same **Web** Client ID into
+   `googleWebClientId` in `lib/core/constant/api_constant.dart`.
+4. Rebuild and try the button again.
+
+(The Android OAuth client isn't referenced anywhere in code - Google
+verifies the request using your app's package name + SHA-1 against it
+automatically. Only the Web client ID is ever used by the app itself.)
+
+### Apple Sign-In setup
+
+The "Continue with Apple" button always shows "requires an Apple Developer
+account" until you do this (it needs a paid Apple Developer Program
+membership, which only you can buy):
+
+1. **Apple Developer** → Certificates, Identifiers & Profiles → enable
+   "Sign In with Apple" for this app's Bundle ID, then create a **Services
+   ID** for the web/Android flow with a return URL pointing at your
+   Supabase project (`https://<project-ref>.supabase.co/auth/v1/callback`).
+2. **Supabase Dashboard** → Authentication → Providers → Apple → enable it,
+   fill in the Services ID, Team ID, Key ID and private key from your Apple
+   Developer account.
+3. **This repo**: replace `LoginController.loginWithApple()`'s guard with a
+   real `SignInWithApple.getAppleIDCredential(...)` call (the
+   `sign_in_with_apple` package is already in `pubspec.yaml`) followed by
+   `SupabaseService.auth.signInWithIdToken(provider: OAuthProvider.apple, ...)`
+   and `_authRepository.completeSignIn()`, the same pattern
+   `loginWithGoogle()` already uses.
+4. Rebuild and try the button again.
+
+### Razorpay setup
+
+Lets users buy point packs with a card/UPI/netbanking (Profile/Rewards →
+"Buy Points"), which spend through the same upgrade flow as mining rewards.
+Razorpay was chosen over Stripe because Stripe does not accept new direct
+merchant sign-ups from India (RBI Payment Aggregator rules) and lacks UPI,
+which is how most Indian users actually pay. **Read this first:** Google
+Play and the App Store both require their own in-app billing (Google Play
+Billing / Apple IAP) for real-money purchases of virtual currency consumed
+inside the app - this applies no matter which payment gateway is used
+server-side, so Razorpay here is fine for direct-APK or web distribution,
+but will get a store listing rejected/suspended if shipped through Play
+Store or App Store as-is (see the comment in
+`supabase/migrations/0004_razorpay.sql`).
+
+1. Create a [Razorpay account](https://dashboard.razorpay.com/signup) -
+   instant for an individual/proprietorship/company, Test Mode is on by
+   default (no real charges, no KYC needed yet). Full KYC (PAN, bank
+   account) is only required later to switch to Live Mode and accept real
+   payments.
+2. **Settings → API Keys → Generate Test Key**: copy the **Key Id**
+   (`rzp_test_...`) into `razorpayKeyId` in
+   `lib/core/constant/api_constant.dart`, and set the **Key Secret** as an
+   Edge Function secret:
+   ```bash
+   supabase secrets set RAZORPAY_KEY_ID=rzp_test_... RAZORPAY_KEY_SECRET=...
+   ```
+3. **Settings → Webhooks → Add New Webhook**, URL:
+   `https://tqnalbpqbitabuxuldhq.supabase.co/functions/v1/razorpay-webhook`,
+   active events: `payment.captured` and `payment.failed`. Set a webhook
+   **Secret** there and add the same value here:
+   ```bash
+   supabase secrets set RAZORPAY_WEBHOOK_SECRET=...
+   ```
+4. Rebuild the app. Edit prices/points in the `store_packages` table (SQL
+   editor or a future admin panel page) - three starter packages are seeded
+   in INR (`price_cents` is paise, e.g. `9900` = ₹99).
+
+Points only ever get granted by `razorpay-webhook` after Razorpay confirms
+the payment (`payment.captured`) - never by the app directly - so a closed
+app or lost connection mid-payment can't create free points, and Razorpay
+retrying the webhook can't double-grant them (`purchases.status` is checked
+before crediting).
 
 ### Branding & assets
 

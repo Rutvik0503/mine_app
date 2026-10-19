@@ -24,5 +24,13 @@ export async function grantXp(
   }
 
   await admin.from("profiles").update({ xp, level }).eq("id", userId);
+
+  // Ledger of individual grants (not just the running total) - the Weekly/
+  // Monthly XP leaderboards need "how much in the last N days", which
+  // profiles.xp alone can't answer.
+  if (amount > 0) {
+    await admin.from("xp_events").insert({ user_id: userId, amount });
+  }
+
   return { xp, level };
 }

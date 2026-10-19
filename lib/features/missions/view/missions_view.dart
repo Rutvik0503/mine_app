@@ -14,11 +14,11 @@ class MissionsView extends GetView<MissionsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
-      appBar: const PrimaryAppBar(title: "Today's Missions"),
+      appBar: PrimaryAppBar(title: "Today's Missions".tr),
       body: Obx(() {
         if (controller.isLoading.value) return const LoadingOverlay();
         if (controller.missions.isEmpty) {
-          return const EmptyStateWidget(message: 'No missions today. Check back tomorrow!');
+          return EmptyStateWidget(message: 'No missions today. Check back tomorrow!'.tr);
         }
         return RefreshIndicator(
           onRefresh: controller.load,

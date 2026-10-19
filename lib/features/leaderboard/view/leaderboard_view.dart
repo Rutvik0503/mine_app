@@ -15,20 +15,42 @@ class LeaderboardView extends GetView<LeaderboardController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
-      appBar: const PrimaryAppBar(title: 'Leaderboard'),
+      appBar: PrimaryAppBar(title: 'Leaderboard'.tr),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          SizedBox(
+            height: 44,
             child: Obx(
-              () => SegmentedButton<LeaderboardCategory>(
-                segments: const [
-                  ButtonSegment(value: LeaderboardCategory.hashrate, label: Text('Hashrate')),
-                  ButtonSegment(value: LeaderboardCategory.level, label: Text('Level')),
-                  ButtonSegment(value: LeaderboardCategory.streak, label: Text('Streak')),
+              () => ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                children: [
+                  _CategoryChip(
+                    label: 'Weekly XP'.tr,
+                    selected: controller.category.value == LeaderboardCategory.weeklyXp,
+                    onTap: () => controller.changeCategory(LeaderboardCategory.weeklyXp),
+                  ),
+                  _CategoryChip(
+                    label: 'Monthly XP'.tr,
+                    selected: controller.category.value == LeaderboardCategory.monthlyXp,
+                    onTap: () => controller.changeCategory(LeaderboardCategory.monthlyXp),
+                  ),
+                  _CategoryChip(
+                    label: 'Hashrate'.tr,
+                    selected: controller.category.value == LeaderboardCategory.hashrate,
+                    onTap: () => controller.changeCategory(LeaderboardCategory.hashrate),
+                  ),
+                  _CategoryChip(
+                    label: 'Level'.tr,
+                    selected: controller.category.value == LeaderboardCategory.level,
+                    onTap: () => controller.changeCategory(LeaderboardCategory.level),
+                  ),
+                  _CategoryChip(
+                    label: 'Streak'.tr,
+                    selected: controller.category.value == LeaderboardCategory.streak,
+                    onTap: () => controller.changeCategory(LeaderboardCategory.streak),
+                  ),
                 ],
-                selected: {controller.category.value},
-                onSelectionChanged: (s) => controller.changeCategory(s.first),
               ),
             ),
           ),
@@ -36,7 +58,7 @@ class LeaderboardView extends GetView<LeaderboardController> {
             child: Obx(() {
               if (controller.isLoading.value) return const LoadingOverlay();
               if (controller.entries.isEmpty) {
-                return const EmptyStateWidget(message: 'Leaderboard is empty.');
+                return EmptyStateWidget(message: 'Leaderboard is empty.'.tr);
               }
               return ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -64,7 +86,7 @@ class LeaderboardView extends GetView<LeaderboardController> {
                           backgroundColor: AppColor.surfaceElevated,
                           backgroundImage: e.avatarUrl != null ? NetworkImage(e.avatarUrl!) : null,
                           child: e.avatarUrl == null
-                              ? const Icon(Icons.person, size: 16, color: AppColor.textSecondary)
+                              ? Icon(Icons.person, size: 16, color: AppColor.textSecondary)
                               : null,
                         ),
                         const SizedBox(width: 10),
@@ -78,6 +100,29 @@ class LeaderboardView extends GetView<LeaderboardController> {
             }),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _CategoryChip({required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: selected,
+        onSelected: (_) => onTap(),
+        selectedColor: AppColor.primary,
+        backgroundColor: AppColor.surface,
+        labelStyle: TextStyle(color: selected ? Colors.white : AppColor.textPrimary),
+        side: BorderSide(color: selected ? AppColor.primary : AppColor.border),
       ),
     );
   }

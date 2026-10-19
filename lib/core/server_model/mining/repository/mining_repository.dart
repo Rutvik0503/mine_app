@@ -8,7 +8,10 @@ class MiningRepository {
 
   Future<List<MiningSessionModel>> history({int limit = 20}) => _service.fetchHistory(limit: limit);
 
-  Future<void> startMining() => _service.startMining();
+  Future<void> startMining({List<String>? machineIds}) => _service.startMining(machineIds: machineIds);
 
-  Future<Map<String, dynamic>> claimMining(String sessionId) => _service.claimMining(sessionId);
+  Future<Map<String, dynamic>> claimMining(String sessionId, {bool adBonus = false}) =>
+      _service.claimMining(sessionId, adBonus: adBonus);
+
+  Future<void> extendWithAd(String sessionId) => _service.extendWithAd(sessionId);
 }

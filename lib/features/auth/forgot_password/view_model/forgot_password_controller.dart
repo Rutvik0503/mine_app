@@ -17,9 +17,9 @@ class ForgotPasswordController extends GetxController {
     try {
       await _authRepository.forgotPassword(emailController.text.trim());
       emailSent.value = true;
-      AppSnackbar.success('Password reset email sent.');
+      AppSnackbar.success('Password reset email sent.'.tr);
     } catch (e) {
-      AppSnackbar.error('Could not send reset email. Please try again.');
+      AppSnackbar.error('Could not send reset email. Please try again.'.tr);
     } finally {
       isLoading.value = false;
     }

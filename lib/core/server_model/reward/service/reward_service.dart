@@ -1,3 +1,4 @@
+import '../../../constant/api_constant.dart';
 import '../../../constant/table_constant.dart';
 import '../../../services/supabase_service.dart';
 import '../model/reward_transaction_model.dart';
@@ -45,5 +46,14 @@ class RewardService {
         .order('created_at', ascending: false)
         .limit(limit);
     return rows.map((e) => RewardTransactionModel.fromJson(e)).toList();
+  }
+
+  /// Rewarded-ad grants (grant-ad-reward) - only call after the ad was
+  /// watched to completion.
+  Future<Map<String, dynamic>> grantAdReward(String action, {String? sessionId}) {
+    return SupabaseService.invoke(
+      ApiConstant.fnGrantAdReward,
+      body: {'action': action, if (sessionId != null) 'session_id': sessionId},
+    );
   }
 }

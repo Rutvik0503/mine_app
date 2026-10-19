@@ -42,7 +42,7 @@ class ReferralController extends GetxController {
     final code = profile.value?.referralCode;
     if (code == null) return;
     Clipboard.setData(ClipboardData(text: code));
-    AppSnackbar.success('Referral code copied!');
+    AppSnackbar.success('Referral code copied!'.tr);
   }
 
   Future<void> shareCode() async {

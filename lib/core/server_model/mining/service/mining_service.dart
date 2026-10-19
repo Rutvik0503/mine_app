@@ -33,13 +33,25 @@ class MiningService {
     return rows.map((e) => MiningSessionModel.fromJson(e)).toList();
   }
 
-  Future<Map<String, dynamic>> startMining() {
-    return SupabaseService.invoke(ApiConstant.fnStartMining);
+  Future<Map<String, dynamic>> startMining({List<String>? machineIds}) {
+    return SupabaseService.invoke(
+      ApiConstant.fnStartMining,
+      body: machineIds == null ? null : {'machine_ids': machineIds},
+    );
   }
 
-  Future<Map<String, dynamic>> claimMining(String sessionId) {
+  /// [adBonus] after a completed rewarded ad doubles the reward (capped
+  /// per day server-side).
+  Future<Map<String, dynamic>> claimMining(String sessionId, {bool adBonus = false}) {
     return SupabaseService.invoke(
       ApiConstant.fnClaimMining,
+      body: {'session_id': sessionId, if (adBonus) 'ad_bonus': true},
+    );
+  }
+
+  Future<Map<String, dynamic>> extendWithAd(String sessionId) {
+    return SupabaseService.invoke(
+      ApiConstant.fnExtendMiningSession,
       body: {'session_id': sessionId},
     );
   }

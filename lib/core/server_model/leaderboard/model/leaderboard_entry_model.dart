@@ -23,4 +23,4 @@ class LeaderboardEntryModel {
       );
 }
 
-enum LeaderboardCategory { hashrate, level, streak }
+enum LeaderboardCategory { weeklyXp, monthlyXp, hashrate, level, streak }

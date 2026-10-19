@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1094723467852",
+    "project_id": "virtual-mining-empire",
+    "storage_bucket": "virtual-mining-empire.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094723467852:android:d86612f06481b9b485d2e9",
+        "android_client_info": {
+          "package_name": "com.virtualminingempire.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094723467852-jkmlalossbmcpafht1m7nvsso8j16csp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfjHyBN_Cie9aD1clymySWlnGFJ5-059Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094723467852-jkmlalossbmcpafht1m7nvsso8j16csp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

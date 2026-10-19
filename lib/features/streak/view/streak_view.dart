@@ -13,7 +13,7 @@ class StreakView extends GetView<StreakController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
-      appBar: const PrimaryAppBar(title: 'Streak'),
+      appBar: PrimaryAppBar(title: 'Streak'.tr),
       body: Obx(() {
         if (controller.isLoading.value) return const LoadingOverlay();
         final streak = controller.streak.value;
@@ -38,7 +38,7 @@ class StreakView extends GetView<StreakController> {
               ),
             ),
             const SizedBox(height: 24),
-            const AppText.subHeading('Milestones'),
+            AppText.subHeading('Milestones'.tr),
             const SizedBox(height: 12),
             ...StreakController.milestones.map((day) {
               final reached = current >= day;

@@ -1,3 +1,5 @@
+import 'machine_plan_model.dart';
+
 class MachineModel {
   final String id;
   final String name;
@@ -6,7 +8,12 @@ class MachineModel {
   final double baseEfficiency;
   final int maxLevel;
   final String? imageUrl;
+  final String? description;
   final bool isActive;
+  /// 'air' | 'hydro' | 'premium' for rentable store miners, null otherwise.
+  final String? farmCategory;
+  final int? powerWatts;
+  final List<MachinePlanModel> plans;
 
   MachineModel({
     required this.id,
@@ -16,7 +23,11 @@ class MachineModel {
     required this.baseEfficiency,
     required this.maxLevel,
     this.imageUrl,
+    this.description,
     required this.isActive,
+    this.farmCategory,
+    this.powerWatts,
+    this.plans = const [],
   });
 
   factory MachineModel.fromJson(Map<String, dynamic> json) => MachineModel(
@@ -27,6 +38,14 @@ class MachineModel {
         baseEfficiency: (json['base_efficiency'] as num?)?.toDouble() ?? 0.8,
         maxLevel: (json['max_level'] as num?)?.toInt() ?? 10,
         imageUrl: json['image_url'] as String?,
+        description: json['description'] as String?,
         isActive: json['is_active'] as bool? ?? true,
+        farmCategory: json['farm_category'] as String?,
+        powerWatts: (json['power_watts'] as num?)?.toInt(),
+        plans: ((json['machine_plans'] as List?) ?? [])
+            .map((e) => MachinePlanModel.fromJson(Map<String, dynamic>.from(e)))
+            .where((p) => p.isActive)
+            .toList()
+          ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder)),
       );
 }

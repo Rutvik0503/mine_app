@@ -31,6 +31,9 @@ class AuthService {
 
   Future<void> signOut() => _client.auth.signOut();
 
+  /// Permanently deletes the signed-in user's account server-side.
+  Future<void> deleteAccount() => SupabaseService.invoke(ApiConstant.fnDeleteAccount);
+
   /// Ensures a `profiles` row + starter farm + starter machine exist for the
   /// current user (server-side, idempotent). Must run right after signup.
   Future<void> createProfile({String? referralCode, String? username}) async {

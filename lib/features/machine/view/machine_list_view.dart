@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/common_widget/rental_time_left.dart';
 import '../../../core/common_widget/app_text.dart';
 import '../../../core/common_widget/empty_state_widget.dart';
 import '../../../core/common_widget/loading_overlay.dart';
 import '../../../core/common_widget/primary_app_bar.dart';
 import '../../../core/constant/app_color.dart';
+import '../../../core/utils/type_icons.dart';
 import '../view_model/machine_controller.dart';
 
 class MachineListView extends GetView<MachineController> {
@@ -14,11 +16,11 @@ class MachineListView extends GetView<MachineController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
-      appBar: const PrimaryAppBar(title: 'My Machines'),
+      appBar: PrimaryAppBar(title: 'My Machines'.tr),
       body: Obx(() {
         if (controller.isLoading.value) return const LoadingOverlay();
         if (controller.myMachines.isEmpty) {
-          return const EmptyStateWidget(message: 'No machines yet.', icon: Icons.memory_rounded);
+          return EmptyStateWidget(message: 'No machines yet.'.tr, icon: Icons.memory_rounded);
         }
         return RefreshIndicator(
           onRefresh: controller.load,
@@ -47,7 +49,10 @@ class MachineListView extends GetView<MachineController> {
                           color: AppColor.surfaceElevated,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.memory_rounded, color: AppColor.secondary),
+                        child: Icon(
+                          TypeIcons.machine(m.machine?.machineType ?? 'standard'),
+                          color: AppColor.secondary,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -57,11 +62,20 @@ class MachineListView extends GetView<MachineController> {
                             AppText(m.machine?.name ?? 'Machine', weight: FontWeight.w700),
                             const SizedBox(height: 4),
                             AppText.caption(
-                                'Level ${m.level} • ${m.currentHashrate.toStringAsFixed(1)} TH/s • ${(m.currentEfficiency * 100).toStringAsFixed(0)}% eff.'),
+                              'machineListStats'.trParams({
+                                'level': '${m.level}',
+                                'hashrate': m.currentHashrate.toStringAsFixed(1),
+                                'efficiency': (m.currentEfficiency * 100).toStringAsFixed(0),
+                              }),
+                            ),
+                            if (m.isRental) ...[
+                              const SizedBox(height: 4),
+                              RentalTimeLeft(machine: m),
+                            ],
                           ],
                         ),
                       ),
-                      const Icon(Icons.chevron_right_rounded, color: AppColor.textDisabled),
+                      Icon(Icons.chevron_right_rounded, color: AppColor.textDisabled),
                     ],
                   ),
                 ),

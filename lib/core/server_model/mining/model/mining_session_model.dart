@@ -9,6 +9,14 @@ class MiningSessionModel {
   final double rewardRateSnapshot;
   final double? calculatedReward;
   final String status; // active | completed | cancelled | expired
+  final int adExtensionsUsed;
+  final int adSpeedupsUsed;
+
+  /// user_machines ids this session mines with; null on sessions started
+  /// before miner selection existed (those used every active machine).
+  final List<String>? machineIds;
+
+  static const int maxAdExtensions = 2;
 
   MiningSessionModel({
     required this.id,
@@ -21,6 +29,9 @@ class MiningSessionModel {
     required this.rewardRateSnapshot,
     this.calculatedReward,
     required this.status,
+    this.adExtensionsUsed = 0,
+    this.adSpeedupsUsed = 0,
+    this.machineIds,
   });
 
   bool get isActive => status == 'active';
@@ -31,6 +42,12 @@ class MiningSessionModel {
   }
 
   bool get isReadyToClaim => status == 'active' && remaining == Duration.zero;
+
+  bool get canExtendWithAd => isReadyToClaim && adExtensionsUsed < maxAdExtensions;
+
+  /// Still mining - speed-ups are capped per day (not per session) by
+  /// grant-ad-reward; see MiningController.speedUpsLeft.
+  bool get canSpeedUpWithAd => isActive && remaining > Duration.zero;
 
   factory MiningSessionModel.fromJson(Map<String, dynamic> json) => MiningSessionModel(
         id: json['id'] as String,
@@ -43,5 +60,8 @@ class MiningSessionModel {
         rewardRateSnapshot: (json['reward_rate_snapshot'] as num?)?.toDouble() ?? 0,
         calculatedReward: (json['calculated_reward'] as num?)?.toDouble(),
         status: json['status'] as String? ?? 'active',
+        adExtensionsUsed: (json['ad_extensions_used'] as num?)?.toInt() ?? 0,
+        adSpeedupsUsed: (json['ad_speedups_used'] as num?)?.toInt() ?? 0,
+        machineIds: (json['machine_ids'] as List?)?.map((e) => e.toString()).toList(),
       );
 }

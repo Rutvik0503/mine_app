@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../core/routes/app_routes.dart';
 import '../../../core/server_model/reward/model/reward_transaction_model.dart';
 import '../../../core/server_model/reward/repository/reward_repository.dart';
 
@@ -6,6 +7,7 @@ class RewardsController extends GetxController {
   final RewardRepository _rewardRepository = RewardRepository();
 
   final isLoading = true.obs;
+  final hasError = false.obs;
   final availableBalance = 0.0.obs;
   final pendingBalance = 0.0.obs;
   final history = <RewardTransactionModel>[].obs;
@@ -18,6 +20,7 @@ class RewardsController extends GetxController {
 
   Future<void> load() async {
     isLoading.value = true;
+    hasError.value = false;
     try {
       final results = await Future.wait([
         _rewardRepository.availableBalance(),
@@ -27,6 +30,8 @@ class RewardsController extends GetxController {
       availableBalance.value = results[0] as double;
       pendingBalance.value = results[1] as double;
       history.value = results[2] as List<RewardTransactionModel>;
+    } catch (_) {
+      hasError.value = true;
     } finally {
       isLoading.value = false;
     }
@@ -43,4 +48,6 @@ class RewardsController extends GetxController {
   }
 
   double get totalEarned => history.fold(0.0, (sum, t) => sum + t.amount);
+
+  void goToStore() => Get.toNamed(AppRoutes.store);
 }

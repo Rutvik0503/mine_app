@@ -16,6 +16,8 @@ class AppRoutes {
 
   static const String machineList = '/machines';
   static const String machineDetail = '/machines/detail';
+  static const String machinePlans = '/machines/plans';
+  static const String spin = '/spin';
   static const String missions = '/missions';
   static const String streak = '/streak';
   static const String referral = '/referral';
@@ -23,4 +25,8 @@ class AppRoutes {
   static const String leaderboard = '/leaderboard';
   static const String notifications = '/notifications';
   static const String settings = '/settings';
+  static const String store = '/store';
+  static const String legalPage = '/legal';
+  static const String maintenance = '/maintenance';
+  static const String updateRequired = '/update-required';
 }

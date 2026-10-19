@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/common_widget/app_button.dart';
 import '../../../../core/common_widget/app_text.dart';
+import '../../../../core/common_widget/mining_visuals.dart';
 import '../../../../core/common_widget/app_text_field.dart';
 import '../../../../core/constant/app_color.dart';
 import '../../../../core/constant/app_string.dart';
@@ -24,20 +25,22 @@ class SignupView extends GetView<SignupController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppText.heading('Create your account'),
+                const Center(child: MiningLogo(size: 68)),
+                const SizedBox(height: 20),
+                AppText.heading('Create your account'.tr),
                 const SizedBox(height: 6),
-                const AppText.caption('Start building your mining empire'),
+                AppText.caption('Start building your mining empire'.tr),
                 const SizedBox(height: 28),
                 AppTextField(
                   controller: controller.usernameController,
-                  label: 'Username',
+                  label: 'Username'.tr,
                   hint: 'Miner123',
-                  validator: (v) => Validators.required(v, field: 'Username'),
+                  validator: Validators.username,
                 ),
                 const SizedBox(height: 16),
                 AppTextField(
                   controller: controller.emailController,
-                  label: 'Email',
+                  label: 'Email'.tr,
                   hint: 'you@example.com',
                   keyboardType: TextInputType.emailAddress,
                   validator: Validators.email,
@@ -46,7 +49,7 @@ class SignupView extends GetView<SignupController> {
                 Obx(
                   () => AppTextField(
                     controller: controller.passwordController,
-                    label: 'Password',
+                    label: 'Password'.tr,
                     hint: '••••••••',
                     obscure: controller.obscurePassword.value,
                     validator: Validators.password,
@@ -64,7 +67,7 @@ class SignupView extends GetView<SignupController> {
                 const SizedBox(height: 16),
                 AppTextField(
                   controller: controller.confirmPasswordController,
-                  label: 'Confirm Password',
+                  label: 'Confirm Password'.tr,
                   hint: '••••••••',
                   obscure: true,
                   validator: (v) =>
@@ -73,13 +76,13 @@ class SignupView extends GetView<SignupController> {
                 const SizedBox(height: 16),
                 AppTextField(
                   controller: controller.referralCodeController,
-                  label: 'Referral Code (optional)',
+                  label: 'Referral Code (optional)'.tr,
                   hint: 'e.g. URVI4829',
                 ),
                 const SizedBox(height: 28),
                 Obx(
                   () => AppButton(
-                    label: AppString.signup,
+                    label: AppString.signup.tr,
                     loading: controller.isLoading.value,
                     onPressed: controller.signup,
                   ),
@@ -88,7 +91,7 @@ class SignupView extends GetView<SignupController> {
                 Center(
                   child: TextButton(
                     onPressed: controller.goToLogin,
-                    child: const AppText.caption('Already have an account? Login'),
+                    child: AppText.caption('Already have an account? Login'.tr),
                   ),
                 ),
                 const SizedBox(height: 12),

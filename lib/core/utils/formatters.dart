@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class Formatters {
@@ -22,6 +23,16 @@ class Formatters {
   static String date(DateTime dt) => DateFormat('MMM d, yyyy').format(dt.toLocal());
 
   static String dateTime(DateTime dt) => DateFormat('MMM d, yyyy • h:mm a').format(dt.toLocal());
+
+  /// "3 days left", "5 hours left", "Ends in under an hour" until [end].
+  static String timeLeft(DateTime end) {
+    final left = end.difference(DateTime.now());
+    if (left.isNegative) return 'Rental expired'.tr;
+    if (left.inDays >= 2) return 'daysLeft'.trParams({'n': '${left.inDays}'});
+    if (left.inDays == 1) return '1 day left'.tr;
+    if (left.inHours >= 1) return 'hoursLeft'.trParams({'n': '${left.inHours}'});
+    return 'Ends in under an hour'.tr;
+  }
 
   static String percent(double value) => '${(value * 100).clamp(0, 100).toStringAsFixed(0)}%';
 }

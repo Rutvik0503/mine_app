@@ -6,6 +6,21 @@
 import { adminClient, generateReferralCode, getRequestUser } from "../_shared/client.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/cors.ts";
 
+const BLOCKED_WORDS = [
+  "fuck", "shit", "bitch", "cunt", "dick", "pussy", "porn", "sex", "nigg", "rape", "nazi", "hitler",
+  "chutiya", "madarchod", "bhenchod", "behenchod", "lund", "gandu", "randi", "bhosdi",
+  "admin", "support", "official", "moderator", "virtualminingempire",
+];
+
+function cleanUsername(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const name = raw.trim();
+  if (!/^[A-Za-z0-9_.]{3,20}$/.test(name)) return null;
+  const folded = name.toLowerCase().replace(/[^a-z]/g, "");
+  if (BLOCKED_WORDS.some((w) => folded.includes(w))) return null;
+  return name;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -36,7 +51,9 @@ Deno.serve(async (req) => {
       if (referrer) referredBy = referrer.id;
     }
 
-    const finalUsername = (username && username.trim()) || `Miner${Math.floor(1000 + Math.random() * 9000)}`;
+    // Usernames are public (leaderboard), so keep them clean: 3-20 letters,
+    // digits, "_" or ".", no obvious abuse. Anything else gets a default.
+    const finalUsername = cleanUsername(username) ?? `Miner${Math.floor(1000 + Math.random() * 9000)}`;
     const newReferralCode = generateReferralCode(finalUsername);
 
     const { error: profileError } = await admin.from("profiles").insert({
@@ -109,6 +126,6 @@ Deno.serve(async (req) => {
 
     return jsonResponse({ ok: true, already_existed: false });
   } catch (e) {
-    return errorResponse(e instanceof Error ? e.message : "create-profile failed", 500);
+    return errorResponse(e instanceof Error ? e.message : "create-profile failed", 400);
   }
 });

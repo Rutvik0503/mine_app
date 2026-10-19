@@ -21,11 +21,20 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // A solid button's text/spinner must contrast with its own background
+    // (not just assume white) - e.g. color: Colors.white would otherwise
+    // render white text on a white button.
+    final foreground = outlined
+        ? color
+        : (ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+            ? Colors.white
+            : AppColor.background);
+
     final child = loading
-        ? const SizedBox(
+        ? SizedBox(
             height: 20,
             width: 20,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+            child: CircularProgressIndicator(strokeWidth: 2, color: foreground),
           )
         : Row(
             mainAxisSize: MainAxisSize.min,
@@ -43,6 +52,7 @@ class AppButton extends StatelessWidget {
           onPressed: loading ? null : onPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: color,
+            disabledForegroundColor: loading ? color : null,
             side: BorderSide(color: color),
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -56,7 +66,14 @@ class AppButton extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: loading ? null : onPressed,
-        style: ElevatedButton.styleFrom(backgroundColor: color),
+        // Keep the button's own colours while loading, so the spinner shows
+        // clearly instead of a faded grey "disabled" button.
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: foreground,
+          disabledBackgroundColor: loading ? color : null,
+          disabledForegroundColor: loading ? foreground : null,
+        ),
         child: child,
       ),
     );

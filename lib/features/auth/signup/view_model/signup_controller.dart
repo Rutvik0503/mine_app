@@ -24,18 +24,28 @@ class SignupController extends GetxController {
     if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
     try {
-      await _authRepository.signUp(
+      final active = await _authRepository.signUp(
         email: emailController.text.trim(),
         password: passwordController.text,
         username: usernameController.text.trim().isEmpty ? null : usernameController.text.trim(),
+        referralCode: referralCodeController.text.trim().isEmpty ? null : referralCodeController.text.trim(),
       );
       await AnalyticsService.logSignup('email');
-      AppSnackbar.success('Account created! Check your email to verify.');
-      Get.offAllNamed(AppRoutes.mainNav);
+      if (active) {
+        Get.offAllNamed(AppRoutes.mainNav);
+      } else {
+        // Supabase "Confirm email" is on - no session yet, so there's no
+        // profile/farm/machine to enter yet either. They'll be created on
+        // first login once the user clicks the confirmation link.
+        AppSnackbar.success('Account created! Check your email, then log in.'.tr);
+        Get.offAllNamed(AppRoutes.login);
+      }
     } on AuthException catch (e) {
+      debugPrint('Sign up AuthException (status ${e.statusCode}): ${e.message}');
       AppSnackbar.error(e.message);
     } catch (e) {
-      AppSnackbar.error('Sign up failed. Please try again.');
+      debugPrint('Sign up failed: $e');
+      AppSnackbar.error('Sign up failed. Please try again.'.tr);
     } finally {
       isLoading.value = false;
     }

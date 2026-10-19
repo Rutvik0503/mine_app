@@ -29,12 +29,17 @@ Deno.serve(async (req) => {
     const rewardXp = Number(userMission.missions?.reward_xp ?? 0);
     const rewardPoints = Number(userMission.missions?.reward_points ?? 0);
 
-    const { error: updateError } = await admin
+    const { data: updated, error: updateError } = await admin
       .from("user_missions")
       .update({ status: "claimed" })
       .eq("id", userMission.id)
-      .eq("status", "completed"); // guard against a race with another claim
+      .eq("status", "completed") // guard against a race with another claim
+      .select("id");
     if (updateError) throw updateError;
+    // Zero rows matched means another concurrent request already claimed it.
+    if (!updated || updated.length === 0) {
+      throw new Error("This reward has already been claimed");
+    }
 
     if (rewardPoints > 0) {
       await admin.from("reward_transactions").insert({

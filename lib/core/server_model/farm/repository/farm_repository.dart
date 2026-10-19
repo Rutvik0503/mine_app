@@ -10,4 +10,6 @@ class FarmRepository {
   Future<List<FarmTypeModel>> farmTypes() => _service.fetchFarmTypes();
 
   Future<void> upgradeFarm() => _service.upgradeFarm();
+
+  Future<double> miningRate() => _service.fetchMiningRate();
 }

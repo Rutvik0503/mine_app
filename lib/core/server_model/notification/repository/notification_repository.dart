@@ -9,4 +9,15 @@ class NotificationRepository {
   Future<void> markRead(String id) => _service.markRead(id);
 
   Future<void> markAllRead() => _service.markAllRead();
+
+  Future<int> unreadCount() => _service.fetchUnreadCount();
+
+  Future<void> logShownReminder({
+    required String title,
+    required String body,
+    required String type,
+    required DateTime shownAt,
+    required String ref,
+  }) =>
+      _service.logShownReminder(title: title, body: body, type: type, shownAt: shownAt, ref: ref);
 }

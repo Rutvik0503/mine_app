@@ -22,4 +22,7 @@ class TableConstant {
   static const String appConfig = 'app_config';
   static const String walletAccounts = 'wallet_accounts';
   static const String withdrawals = 'withdrawals';
+  static const String storePackages = 'store_packages';
+  static const String purchases = 'purchases';
+  static const String machinePlans = 'machine_plans';
 }

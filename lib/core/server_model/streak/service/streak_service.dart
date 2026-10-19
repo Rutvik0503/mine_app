@@ -16,6 +16,11 @@ class StreakService {
   }
 
   Future<Map<String, dynamic>> updateStreak() {
-    return SupabaseService.invoke(ApiConstant.fnUpdateStreak);
+    // The phone's local date, so the streak day ends at the player's own
+    // midnight rather than UTC's.
+    final now = DateTime.now();
+    final localDate = '${now.year.toString().padLeft(4, '0')}-'
+        '${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    return SupabaseService.invoke(ApiConstant.fnUpdateStreak, body: {'local_date': localDate});
   }
 }

@@ -16,7 +16,7 @@ class ReferralView extends GetView<ReferralController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.background,
-      appBar: const PrimaryAppBar(title: 'Invite Friends'),
+      appBar: PrimaryAppBar(title: 'Invite Friends'.tr),
       body: Obx(() {
         if (controller.isLoading.value) return const LoadingOverlay();
         final code = controller.profile.value?.referralCode ?? '';
@@ -32,7 +32,7 @@ class ReferralView extends GetView<ReferralController> {
               ),
               child: Column(
                 children: [
-                  const AppText.caption('Your Referral Code'),
+                  AppText.caption('Your Referral Code'.tr),
                   const SizedBox(height: 8),
                   AppText(code, size: 28, weight: FontWeight.w800, color: AppColor.primary),
                   const SizedBox(height: 16),
@@ -40,7 +40,7 @@ class ReferralView extends GetView<ReferralController> {
                     children: [
                       Expanded(
                         child: AppButton(
-                          label: 'Copy',
+                          label: 'Copy'.tr,
                           outlined: true,
                           icon: Icons.copy_rounded,
                           onPressed: controller.copyCode,
@@ -49,7 +49,7 @@ class ReferralView extends GetView<ReferralController> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: AppButton(
-                          label: 'Share',
+                          label: 'Share'.tr,
                           icon: Icons.share_rounded,
                           onPressed: controller.shareCode,
                         ),
@@ -64,7 +64,7 @@ class ReferralView extends GetView<ReferralController> {
               children: [
                 Expanded(
                   child: StatCard(
-                    label: 'Total Invites',
+                    label: 'Total Invites'.tr,
                     value: '${controller.referrals.length}',
                     icon: Icons.person_add_alt_1_rounded,
                   ),
@@ -72,7 +72,7 @@ class ReferralView extends GetView<ReferralController> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    label: 'Active Referrals',
+                    label: 'Active Referrals'.tr,
                     value: '${controller.activeCount}',
                     icon: Icons.verified_rounded,
                     accent: AppColor.success,
@@ -81,10 +81,10 @@ class ReferralView extends GetView<ReferralController> {
               ],
             ),
             const SizedBox(height: 24),
-            const AppText.subHeading('Referral Activity'),
+            AppText.subHeading('Referral Activity'.tr),
             const SizedBox(height: 12),
             if (controller.referrals.isEmpty)
-              const EmptyStateWidget(message: 'No referrals yet. Share your code!')
+              EmptyStateWidget(message: 'No referrals yet. Share your code!'.tr)
             else
               ...controller.referrals.map(
                 (r) => Container(
@@ -102,7 +102,7 @@ class ReferralView extends GetView<ReferralController> {
                         color: r.status == 'active' ? AppColor.success : AppColor.warning,
                       ),
                       const SizedBox(width: 10),
-                      AppText(r.status.toUpperCase(), weight: FontWeight.w600),
+                      AppText(r.status.tr.toUpperCase(), weight: FontWeight.w600),
                     ],
                   ),
                 ),

@@ -5,6 +5,7 @@
 
 import { adminClient, getRequestUser } from "../_shared/client.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/cors.ts";
+import { activeMachineFilter } from "../_shared/hashrate.ts";
 import { bumpMissionProgress } from "../_shared/missions.ts";
 
 Deno.serve(async (req) => {
@@ -13,6 +14,12 @@ Deno.serve(async (req) => {
   try {
     const admin = adminClient();
     const user = await getRequestUser(req, admin);
+    const body = await req.json().catch(() => ({}));
+    // Optional: the user_machines ids to mine with. Omitted = every active
+    // machine (older app builds).
+    const requestedIds: string[] | undefined = Array.isArray(body.machine_ids)
+      ? body.machine_ids.filter((id: unknown) => typeof id === "string")
+      : undefined;
 
     const { data: profile, error: profileError } = await admin
       .from("profiles")
@@ -37,13 +44,25 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (existingSession) throw new Error("A mining session is already active");
 
-    const { data: machines } = await admin
+    const { data: activeMachines } = await admin
       .from("user_machines")
-      .select("current_hashrate")
+      .select("id, current_hashrate")
       .eq("user_id", user.id)
-      .eq("status", "active");
+      .eq("status", "active")
+      .or(activeMachineFilter()); // expired rentals stop mining
 
-    const machineHashrate = (machines ?? []).reduce(
+    let machines = activeMachines ?? [];
+    if (requestedIds !== undefined) {
+      const wanted = new Set(requestedIds);
+      if (wanted.size === 0) throw new Error("Select at least one miner");
+      machines = machines.filter((m) => wanted.has(m.id));
+      // Only the caller's own, still-running machines can be picked.
+      if (machines.length !== wanted.size) {
+        throw new Error("Some selected miners are no longer available - refresh and try again");
+      }
+    }
+
+    const machineHashrate = machines.reduce(
       (sum, m) => sum + Number(m.current_hashrate ?? 0),
       0,
     );
@@ -57,10 +76,17 @@ Deno.serve(async (req) => {
 
     const boostMultiplier = (activeBoosts ?? []).reduce((mult: number, ub: any) => {
       const boost = ub.boosts;
-      if (boost?.type === "mining" || boost?.type === "efficiency") {
+      if (boost?.type === "mining" || boost?.type === "efficiency" || boost?.type === "lucky") {
         return mult * Number(boost.multiplier ?? 1);
       }
       return mult;
+    }, 1);
+
+    // A "speed" boost shortens the session instead of multiplying the
+    // reward rate - same total hashrate, less waiting.
+    const speedMultiplier = (activeBoosts ?? []).reduce((mult: number, ub: any) => {
+      const boost = ub.boosts;
+      return boost?.type === "speed" ? mult * Number(boost.multiplier ?? 1) : mult;
     }, 1);
 
     const userMultiplier = 1 + Math.min(profile.level, 100) * 0.005; // +0.5%/level, capped
@@ -76,7 +102,8 @@ Deno.serve(async (req) => {
     if (config?.maintenance_mode) throw new Error("Mining is temporarily disabled for maintenance");
 
     const rewardRate = Number(config?.mining_rate ?? 1.0);
-    const sessionMinutes = Number(config?.max_session_minutes ?? 60);
+    const baseSessionMinutes = Number(config?.max_session_minutes ?? 60);
+    const sessionMinutes = Math.max(5, Math.round(baseSessionMinutes / speedMultiplier));
 
     const startedAt = new Date();
     const expectedEndAt = new Date(startedAt.getTime() + sessionMinutes * 60 * 1000);
@@ -90,11 +117,20 @@ Deno.serve(async (req) => {
         expected_end_at: expectedEndAt.toISOString(),
         hashrate_snapshot: finalHashrate,
         reward_rate_snapshot: rewardRate,
+        machine_ids: machines.map((m) => m.id),
         status: "active",
       })
       .select()
       .single();
-    if (sessionError) throw sessionError;
+    if (sessionError) {
+      // 23505 = unique_violation on uq_mining_sessions_one_active_per_user -
+      // a concurrent request won the race and inserted first. Same friendly
+      // message as the earlier checked case, not a raw DB error.
+      if (sessionError.code === "23505") {
+        throw new Error("A mining session is already active");
+      }
+      throw sessionError;
+    }
 
     await admin.from("profiles").update({ total_hashrate: finalHashrate }).eq("id", user.id);
 

@@ -31,4 +31,13 @@ class FarmService {
   Future<Map<String, dynamic>> upgradeFarm() {
     return SupabaseService.invoke(ApiConstant.fnUpgradeFarm);
   }
+
+  /// Reward-per-hashrate rate, used only to show an estimated earnings
+  /// projection on the Farm screen - the real reward is always computed
+  /// server-side at claim time.
+  Future<double> fetchMiningRate() async {
+    final row =
+        await _client.from(TableConstant.appConfig).select('mining_rate').limit(1).maybeSingle();
+    return (row?['mining_rate'] as num?)?.toDouble() ?? 1.0;
+  }
 }
