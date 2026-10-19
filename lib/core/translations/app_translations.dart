@@ -334,6 +334,56 @@ const _keys = <String, Map<String, String>>{
     'gu_IN': '3-20 અક્ષર: ફક્ત અક્ષરો, અંકો, _ અથવા .',
     'hi_IN': '3-20 अक्षर: केवल अक्षर, अंक, _ या .',
   },
+  'AUTO MINING · 24h': {'en_US': 'AUTO MINING · 24h', 'gu_IN': 'AUTO MINING · 24 કલાક', 'hi_IN': 'AUTO MINING · 24 घंटे'},
+  'START 24H AUTO MINING': {
+    'en_US': 'START 24H AUTO MINING',
+    'gu_IN': '24 કલાક AUTO MINING શરૂ કરો',
+    'hi_IN': '24 घंटे AUTO MINING शुरू करें',
+  },
+  '24h Auto Mining ready!': {
+    'en_US': '24h Auto Mining ready!',
+    'gu_IN': '24 કલાક Auto Mining તૈયાર!',
+    'hi_IN': '24 घंटे Auto Mining तैयार!',
+  },
+  'autoMiningReadyBody': {
+    'en_US': 'Your next session runs a full 24 hours. Passes: @n',
+    'gu_IN': 'તમારું આગલું session પૂરા 24 કલાક ચાલશે. Passes: @n',
+    'hi_IN': 'आपका अगला session पूरे 24 घंटे चलेगा। Passes: @n',
+  },
+  'How it works': {'en_US': 'How it works', 'gu_IN': 'કેવી રીતે કામ કરે છે', 'hi_IN': 'कैसे काम करता है'},
+  'referralYouGet': {
+    'en_US': 'You get 24h Auto Mining - your next session runs a full day - as soon as a friend joins with your code.',
+    'gu_IN': 'મિત્ર તમારા code થી જોડાય કે તરત તમને 24 કલાક Auto Mining મળે - આગલું session આખો દિવસ ચાલે.',
+    'hi_IN': 'दोस्त आपके code से जुड़ते ही आपको 24 घंटे Auto Mining मिलता है - अगला session पूरा दिन चलता है।',
+  },
+  'referralFriendGets': {
+    'en_US': 'Your friend gets 50 coins to start.',
+    'gu_IN': 'તમારા મિત્રને શરૂઆતમાં 50 coins મળે.',
+    'hi_IN': 'आपके दोस्त को शुरुआत में 50 coins मिलते हैं।',
+  },
+  'referralStack': {
+    'en_US': 'Each friend = one more 24h pass (hold up to 7).',
+    'gu_IN': 'દરેક મિત્ર = એક વધુ 24 કલાકનો pass (7 સુધી રાખી શકાય).',
+    'hi_IN': 'हर दोस्त = एक और 24 घंटे का pass (7 तक रख सकते हैं)।',
+  },
+  'referralShareText': {
+    'en_US': 'Join me on Virtual Mining Empire! Use my code @code when you sign up and get 50 free coins.',
+    'gu_IN': 'Virtual Mining Empire માં જોડાઓ! Signup વખતે મારો code @code નાખો અને 50 મફત coins મેળવો.',
+    'hi_IN': 'Virtual Mining Empire से जुड़ें! Signup करते समय मेरा code @code डालें और 50 मुफ़्त coins पाएं।',
+  },
+  "Have a friend's code?": {'en_US': "Have a friend's code?", 'gu_IN': 'મિત્રનો code છે?', 'hi_IN': 'दोस्त का code है?'},
+  'friendCodeHint': {
+    'en_US': 'Add it within 48 hours of joining to get 50 free coins.',
+    'gu_IN': 'જોડાયાના 48 કલાકમાં નાખો અને 50 મફત coins મેળવો.',
+    'hi_IN': 'जुड़ने के 48 घंटे में डालें और 50 मुफ़्त coins पाएं।',
+  },
+  'Enter code': {'en_US': 'Enter code', 'gu_IN': 'Code નાખો', 'hi_IN': 'Code डालें'},
+  'Apply': {'en_US': 'Apply', 'gu_IN': 'લાગુ કરો', 'hi_IN': 'लागू करें'},
+  'friendCodeApplied': {
+    'en_US': 'Code applied! 50 coins added to your balance.',
+    'gu_IN': 'Code લાગુ થયો! 50 coins ઉમેરાયા.',
+    'hi_IN': 'Code लागू हो गया! 50 coins जुड़ गए।',
+  },
   'Buy Coins': {'en_US': 'Buy Coins', 'gu_IN': 'Coins ખરીદો', 'hi_IN': 'Coins खरीदें'},
   'Get coins': {'en_US': 'Get coins', 'gu_IN': 'Coins મેળવો', 'hi_IN': 'Coins पाएं'},
   'getMoreCoins': {

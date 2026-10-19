@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/common_widget/native_ad_card.dart';
 import '../../../core/common_widget/app_text.dart';
 import '../../../core/common_widget/empty_state_widget.dart';
 import '../../../core/common_widget/error_state_widget.dart';
@@ -85,7 +86,12 @@ class RewardsView extends GetView<RewardsController> {
               if (controller.history.isEmpty)
                 EmptyStateWidget(message: 'No rewards yet. Start mining!'.tr)
               else
-                ...controller.history.map((t) => _RewardTile(transaction: t)),
+                // One native ad, after the 2nd entry (or at the end of a short list).
+                for (var i = 0; i < controller.history.length; i++) ...[
+                  _RewardTile(transaction: controller.history[i]),
+                  if (i == 1 || (i == controller.history.length - 1 && i < 1))
+                    const NativeAdCard(key: ValueKey('rewards-history-native')),
+                ],
             ],
           ),
         );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/common_widget/native_ad_card.dart';
 import '../../../core/common_widget/app_button.dart';
 import '../../../core/common_widget/app_text.dart';
 import '../../../core/common_widget/empty_state_widget.dart';
@@ -74,7 +75,12 @@ class MiningView extends GetView<MiningController> {
               if (controller.history.isEmpty)
                 EmptyStateWidget(message: 'No mining sessions yet.'.tr)
               else
-                ...controller.history.map((s) => _HistoryTile(session: s)),
+                // One native ad, after the 2nd entry (or at the end of a short list).
+                for (var i = 0; i < controller.history.length; i++) ...[
+                  _HistoryTile(session: controller.history[i]),
+                  if (i == 1 || (i == controller.history.length - 1 && i < 1))
+                    const NativeAdCard(key: ValueKey('mining-history-native')),
+                ],
             ],
           ),
         );
@@ -116,6 +122,10 @@ class _StatusCard extends StatelessWidget {
               color: Colors.white,
               weight: FontWeight.w700,
             ),
+            if (session != null && session.autoMining) ...[
+              const SizedBox(height: 6),
+              const _AutoMiningChip(),
+            ],
             const SizedBox(height: 8),
             if (session != null && !controller.canClaim)
               AppText(
@@ -146,9 +156,13 @@ class _StatusCard extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 20),
+            if (session == null && controller.autoMiningPasses.value > 0) ...[
+              _AutoMiningReady(passes: controller.autoMiningPasses.value),
+              const SizedBox(height: 12),
+            ],
             if (session == null)
               AppButton(
-                label: 'START MINING'.tr,
+                label: (controller.autoMiningPasses.value > 0 ? 'START 24H AUTO MINING' : 'START MINING').tr,
                 loading: controller.isStarting.value,
                 color: Colors.white,
                 onPressed: controller.startMining,
@@ -326,6 +340,63 @@ class _HistoryTile extends StatelessWidget {
               color: AppColor.secondary,
               weight: FontWeight.w700,
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "⚡ AUTO MINING · 24h" on a session started with a referral pass.
+class _AutoMiningChip extends StatelessWidget {
+  const _AutoMiningChip();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.25),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColor.warning),
+      ),
+      child: AppText('⚡ ${'AUTO MINING · 24h'.tr}', size: 11, weight: FontWeight.w800, color: AppColor.warning),
+    );
+  }
+}
+
+/// Shown above Start Mining while the player holds referral passes.
+class _AutoMiningReady extends StatelessWidget {
+  final int passes;
+  const _AutoMiningReady({required this.passes});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.22),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColor.warning.withValues(alpha: 0.8)),
+      ),
+      child: Row(
+        children: [
+          const Text('⚡', style: TextStyle(fontSize: 22)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText('24h Auto Mining ready!'.tr, weight: FontWeight.w800, color: AppColor.warning, size: 14),
+                const SizedBox(height: 2),
+                AppText(
+                  'autoMiningReadyBody'.trParams({'n': '$passes'}),
+                  size: 12,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

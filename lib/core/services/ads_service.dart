@@ -21,6 +21,8 @@ class AdsService {
   static const String _testBannerIOS = 'ca-app-pub-3940256099942544/2934735716';
   static const String _testAppOpenAndroid = 'ca-app-pub-3940256099942544/9257395921';
   static const String _testAppOpenIOS = 'ca-app-pub-3940256099942544/5575463023';
+  static const String _testNativeAndroid = 'ca-app-pub-3940256099942544/2247696110';
+  static const String _testNativeIOS = 'ca-app-pub-3940256099942544/3986624511';
 
   // Real AdMob units - app "Virtual Mining Empire" (Android),
   // App ID ca-app-pub-5350317534812840~7499523470.
@@ -28,6 +30,9 @@ class AdsService {
   static const String _interstitialAndroid = 'ca-app-pub-5350317534812840/6384832485';
   static const String _appOpenAndroid = 'ca-app-pub-5350317534812840/6760412019';
   static const String _bannerAndroid = 'ca-app-pub-5350317534812840/2672818183';
+  // Fill in once the "Native advanced" ad unit exists in AdMob - until then
+  // release builds simply show no native ads (never test ads).
+  static const String _nativeAndroid = '';
 
   static bool get _isIOS => defaultTargetPlatform == TargetPlatform.iOS;
   static bool get _useRealAndroidUnits => kReleaseMode && !_isIOS;
@@ -136,6 +141,13 @@ class AdsService {
 
   String get appOpenUnitId =>
       _isIOS ? _testAppOpenIOS : (_useRealAndroidUnits ? _appOpenAndroid : _testAppOpenAndroid);
+
+  /// Null when there's no real native unit for a release build yet.
+  String? get nativeUnitId {
+    if (_isIOS) return _testNativeIOS;
+    if (!_useRealAndroidUnits) return _testNativeAndroid;
+    return _nativeAndroid.isEmpty ? null : _nativeAndroid;
+  }
 
   String get bannerUnitId =>
       _isIOS ? _testBannerIOS : (_useRealAndroidUnits ? _bannerAndroid : _testBannerAndroid);

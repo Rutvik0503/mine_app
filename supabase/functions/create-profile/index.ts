@@ -5,6 +5,7 @@
 
 import { adminClient, generateReferralCode, getRequestUser } from "../_shared/client.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/cors.ts";
+import { grantReferralRewards } from "../_shared/referral.ts";
 
 const BLOCKED_WORDS = [
   "fuck", "shit", "bitch", "cunt", "dick", "pussy", "porn", "sex", "nigg", "rape", "nazi", "hitler",
@@ -65,13 +66,14 @@ Deno.serve(async (req) => {
     });
     if (profileError) throw profileError;
 
-    if (referredBy) {
+    if (referredBy && referredBy !== user.id) {
       await admin.from("referrals").insert({
         referrer_id: referredBy,
         referred_user_id: user.id,
         referral_code: referralCode,
         status: "pending",
       });
+      await grantReferralRewards(admin, referredBy, user.id, finalUsername);
     }
 
     const { data: farmType } = await admin

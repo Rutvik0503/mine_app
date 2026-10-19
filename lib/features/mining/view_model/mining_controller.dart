@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:get/get.dart';
+import '../../../core/server_model/auth/repository/auth_repository.dart';
 import '../../../core/services/reminder_service.dart';
 import '../../../core/common_widget/app_snackbar.dart';
 import '../../../core/constant/app_string.dart';
@@ -25,6 +26,7 @@ class MiningController extends GetxController with AppLifecycleTicker {
   final StoreRepository _storeRepository = StoreRepository();
   final FarmRepository _farmRepository = FarmRepository();
   final RewardRepository _rewardRepository = RewardRepository();
+  final AuthRepository _authRepository = AuthRepository();
   final MachineRepository _machineRepository = MachineRepository();
 
   final isLoading = true.obs;
@@ -76,6 +78,7 @@ class MiningController extends GetxController with AppLifecycleTicker {
       session.value = results[0] as MiningSessionModel?;
       unawaited(ReminderService.instance.planMiningDone(session.value));
       unawaited(_loadSpeedUpsLeft());
+      unawaited(_loadAutoMiningPasses());
       if (extraTimePrice.value.isEmpty) unawaited(_loadExtraTimePrice());
       history.value = results[1] as List<MiningSessionModel>;
       activeBoosts.value = results[2] as List<UserBoostModel>;
@@ -182,6 +185,17 @@ class MiningController extends GetxController with AppLifecycleTicker {
 
   final isWatchingAd = false.obs;
   final isSpeedingUp = false.obs;
+
+  /// Unused referral "24h Auto Mining" passes - the next session uses one.
+  final autoMiningPasses = 0.obs;
+
+  Future<void> _loadAutoMiningPasses() async {
+    try {
+      autoMiningPasses.value = (await _authRepository.currentProfile())?.autoMiningPasses ?? 0;
+    } catch (_) {
+      // Banner just stays hidden.
+    }
+  }
 
   /// Speed-ups left today, across all sessions (null until loaded).
   final speedUpsLeft = Rxn<int>();

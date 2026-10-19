@@ -8,6 +8,8 @@ import { corsHeaders, errorResponse, jsonResponse } from "../_shared/cors.ts";
 import { activeMachineFilter } from "../_shared/hashrate.ts";
 import { bumpMissionProgress } from "../_shared/missions.ts";
 
+const AUTO_MINING_MINUTES = 24 * 60;
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -23,7 +25,7 @@ Deno.serve(async (req) => {
 
     const { data: profile, error: profileError } = await admin
       .from("profiles")
-      .select("id, level, status")
+      .select("id, level, status, auto_mining_passes")
       .eq("id", user.id)
       .single();
     if (profileError || !profile) throw new Error("Profile not found");
@@ -103,7 +105,12 @@ Deno.serve(async (req) => {
 
     const rewardRate = Number(config?.mining_rate ?? 1.0);
     const baseSessionMinutes = Number(config?.max_session_minutes ?? 60);
-    const sessionMinutes = Math.max(5, Math.round(baseSessionMinutes / speedMultiplier));
+    // A referral "24h Auto Mining" pass makes this session run a full day
+    // (and pay for it - claim-mining rewards hashrate x duration).
+    const useAutoPass = Number(profile.auto_mining_passes ?? 0) > 0;
+    const sessionMinutes = useAutoPass
+      ? AUTO_MINING_MINUTES
+      : Math.max(5, Math.round(baseSessionMinutes / speedMultiplier));
 
     const startedAt = new Date();
     const expectedEndAt = new Date(startedAt.getTime() + sessionMinutes * 60 * 1000);
@@ -118,6 +125,7 @@ Deno.serve(async (req) => {
         hashrate_snapshot: finalHashrate,
         reward_rate_snapshot: rewardRate,
         machine_ids: machines.map((m) => m.id),
+        auto_mining: useAutoPass,
         status: "active",
       })
       .select()
@@ -133,6 +141,13 @@ Deno.serve(async (req) => {
     }
 
     await admin.from("profiles").update({ total_hashrate: finalHashrate }).eq("id", user.id);
+    if (useAutoPass) {
+      await admin
+        .from("profiles")
+        .update({ auto_mining_passes: Number(profile.auto_mining_passes) - 1 })
+        .eq("id", user.id)
+        .eq("auto_mining_passes", profile.auto_mining_passes); // spend exactly one
+    }
 
     await bumpMissionProgress(admin, user.id, "start_mining");
 

@@ -1,10 +1,13 @@
 // activate-referral (apply-referral)
 // Lets a user who skipped entering a referral code at signup link one
-// later. Activation/reward granting happens separately in claim-mining
-// (see _shared/referral.ts) once the referred user completes a session.
+// later (within 48 hours of joining). Rewards are granted right away, same
+// as a code entered at signup (see grantReferralRewards).
 
 import { adminClient, getRequestUser } from "../_shared/client.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/cors.ts";
+import { grantReferralRewards } from "../_shared/referral.ts";
+
+const LATE_CODE_WINDOW_MS = 48 * 60 * 60 * 1000;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -16,8 +19,17 @@ Deno.serve(async (req) => {
     const referralCode: string | undefined = body.referral_code;
     if (!referralCode) throw new Error("referral_code is required");
 
-    const { data: profile } = await admin.from("profiles").select("referred_by").eq("id", user.id).single();
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("referred_by, username, created_at")
+      .eq("id", user.id)
+      .single();
     if (profile?.referred_by) throw new Error("You already used a referral code");
+    // Only new players: otherwise old accounts could be farmed for the
+    // referrer's Auto Mining passes.
+    if (profile && Date.now() - new Date(profile.created_at).getTime() > LATE_CODE_WINDOW_MS) {
+      throw new Error("Referral codes can only be added in your first 48 hours");
+    }
 
     const { data: referrer } = await admin
       .from("profiles")
@@ -41,6 +53,7 @@ Deno.serve(async (req) => {
       referral_code: referralCode,
       status: "pending",
     });
+    await grantReferralRewards(admin, referrer.id, user.id, profile?.username ?? "A friend");
 
     return jsonResponse({ ok: true });
   } catch (e) {

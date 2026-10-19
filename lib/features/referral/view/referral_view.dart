@@ -59,6 +59,72 @@ class ReferralView extends GetView<ReferralController> {
                 ],
               ),
             ),
+            if (controller.canEnterFriendCode) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColor.surface,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: AppColor.primary.withValues(alpha: 0.6)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText("Have a friend's code?".tr, weight: FontWeight.w800),
+                    const SizedBox(height: 4),
+                    AppText.caption('friendCodeHint'.tr),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: controller.friendCodeController,
+                            textCapitalization: TextCapitalization.characters,
+                            decoration: InputDecoration(
+                              hintText: 'Enter code'.tr,
+                              isDense: true,
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 110,
+                          child: AppButton(
+                            label: 'Apply'.tr,
+                            loading: controller.isApplyingCode.value,
+                            onPressed: controller.applyFriendCode,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: 16),
+            // What both sides get - granted as soon as the friend signs up.
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColor.warning.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColor.warning.withValues(alpha: 0.6)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText('How it works'.tr, weight: FontWeight.w800, color: AppColor.warning),
+                  const SizedBox(height: 10),
+                  _RewardLine(emoji: '⚡', text: 'referralYouGet'.tr),
+                  const SizedBox(height: 8),
+                  _RewardLine(emoji: '🎁', text: 'referralFriendGets'.tr),
+                  const SizedBox(height: 8),
+                  _RewardLine(emoji: '♾️', text: 'referralStack'.tr),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -110,6 +176,24 @@ class ReferralView extends GetView<ReferralController> {
           ],
         );
       }),
+    );
+  }
+}
+
+class _RewardLine extends StatelessWidget {
+  final String emoji;
+  final String text;
+  const _RewardLine({required this.emoji, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(emoji, style: const TextStyle(fontSize: 16)),
+        const SizedBox(width: 10),
+        Expanded(child: AppText(text, size: 13)),
+      ],
     );
   }
 }

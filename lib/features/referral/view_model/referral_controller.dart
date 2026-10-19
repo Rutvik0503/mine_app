@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,6 +16,39 @@ class ReferralController extends GetxController {
   final isLoading = true.obs;
   final profile = Rxn<ProfileModel>();
   final referrals = <ReferralModel>[].obs;
+
+  final friendCodeController = TextEditingController();
+  final isApplyingCode = false.obs;
+
+  /// New players (first 48h, matches activate-referral) who didn't enter a
+  /// code at signup - e.g. Google sign-in - can still add a friend's code.
+  bool get canEnterFriendCode {
+    final p = profile.value;
+    if (p == null || p.referredBy != null) return false;
+    return DateTime.now().difference(p.createdAt) < const Duration(hours: 48);
+  }
+
+  Future<void> applyFriendCode() async {
+    final code = friendCodeController.text.trim();
+    if (code.isEmpty || isApplyingCode.value) return;
+    isApplyingCode.value = true;
+    try {
+      await _referralRepository.applyCode(code);
+      friendCodeController.clear();
+      AppSnackbar.success('friendCodeApplied'.tr);
+      await load();
+    } catch (e) {
+      AppSnackbar.error(e.toString());
+    } finally {
+      isApplyingCode.value = false;
+    }
+  }
+
+  @override
+  void onClose() {
+    friendCodeController.dispose();
+    super.onClose();
+  }
 
   @override
   void onInit() {
@@ -49,6 +83,6 @@ class ReferralController extends GetxController {
     final code = profile.value?.referralCode;
     if (code == null) return;
     await AnalyticsService.logReferralInvite();
-    await Share.share('Join me on Virtual Mining Empire! Use my code $code to get started.');
+    await Share.share('referralShareText'.trParams({'code': code}));
   }
 }

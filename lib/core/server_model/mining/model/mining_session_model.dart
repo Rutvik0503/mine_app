@@ -12,6 +12,9 @@ class MiningSessionModel {
   final int adExtensionsUsed;
   final int adSpeedupsUsed;
 
+  /// A 24-hour session started with a referral Auto Mining pass.
+  final bool autoMining;
+
   /// user_machines ids this session mines with; null on sessions started
   /// before miner selection existed (those used every active machine).
   final List<String>? machineIds;
@@ -31,6 +34,7 @@ class MiningSessionModel {
     required this.status,
     this.adExtensionsUsed = 0,
     this.adSpeedupsUsed = 0,
+    this.autoMining = false,
     this.machineIds,
   });
 
@@ -62,6 +66,7 @@ class MiningSessionModel {
         status: json['status'] as String? ?? 'active',
         adExtensionsUsed: (json['ad_extensions_used'] as num?)?.toInt() ?? 0,
         adSpeedupsUsed: (json['ad_speedups_used'] as num?)?.toInt() ?? 0,
+        autoMining: json['auto_mining'] as bool? ?? false,
         machineIds: (json['machine_ids'] as List?)?.map((e) => e.toString()).toList(),
       );
 }

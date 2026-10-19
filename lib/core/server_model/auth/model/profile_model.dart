@@ -7,6 +7,9 @@ class ProfileModel {
   final int xp;
   final double totalHashrate;
   final int streakDays;
+
+  /// Unused "24h Auto Mining" passes from referrals.
+  final int autoMiningPasses;
   final DateTime? lastActiveAt;
   final String referralCode;
   final String? referredBy;
@@ -22,6 +25,7 @@ class ProfileModel {
     required this.xp,
     required this.totalHashrate,
     required this.streakDays,
+    this.autoMiningPasses = 0,
     this.lastActiveAt,
     required this.referralCode,
     this.referredBy,
@@ -39,6 +43,7 @@ class ProfileModel {
       xp: (json['xp'] as num?)?.toInt() ?? 0,
       totalHashrate: (json['total_hashrate'] as num?)?.toDouble() ?? 0,
       streakDays: (json['streak_days'] as num?)?.toInt() ?? 0,
+      autoMiningPasses: (json['auto_mining_passes'] as num?)?.toInt() ?? 0,
       lastActiveAt:
           json['last_active_at'] != null ? DateTime.tryParse(json['last_active_at']) : null,
       referralCode: json['referral_code'] as String? ?? '',
