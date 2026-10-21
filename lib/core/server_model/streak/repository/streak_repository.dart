@@ -6,5 +6,7 @@ class StreakRepository {
 
   Future<StreakModel?> myStreak() => _service.fetchMyStreak();
 
-  Future<void> checkIn() => _service.updateStreak();
+  /// Server's check-in result: `already_checked_in`, and when false the
+  /// `current_streak`, `coins_awarded`, `xp_awarded` and `level_up_coins`.
+  Future<Map<String, dynamic>> checkIn() => _service.updateStreak();
 }

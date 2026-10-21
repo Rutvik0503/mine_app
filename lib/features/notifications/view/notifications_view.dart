@@ -89,6 +89,7 @@ class _NotificationTile extends StatelessWidget {
         'mining' => (Icons.hardware_rounded, AppColor.primary),
         'rental' => (Icons.hourglass_bottom_rounded, AppColor.warning),
         'referral' => (Icons.people_alt_rounded, AppColor.accent),
+        'level_up' => (Icons.star_rounded, AppColor.warning),
         'reengagement' => (Icons.waving_hand_rounded, AppColor.accent),
         _ => (Icons.notifications_rounded, AppColor.primary),
       };

@@ -431,7 +431,7 @@ const _keys = <String, Map<String, String>>{
   'streakDays': {
     'en_US': '@count Day Streak',
     'gu_IN': '@count દિવસનો સ્ટ્રીક',
-    'hi_IN': '@count दिन की लकीर',
+    'hi_IN': '@count दिन की स्ट्रीक',
   },
   "Today's Missions": {'en_US': "Today's Missions", 'gu_IN': 'આજના મિશન', 'hi_IN': 'आज के मिशन'},
   'No missions yet today.': {
@@ -651,7 +651,7 @@ const _keys = <String, Map<String, String>>{
   // ---- Profile ----
   'Level': {'en_US': 'Level', 'gu_IN': 'લેવલ', 'hi_IN': 'लेवल'},
   'XP': {'en_US': 'XP', 'gu_IN': 'XP', 'hi_IN': 'XP'},
-  'Streak': {'en_US': 'Streak', 'gu_IN': 'સ્ટ્રીક', 'hi_IN': 'लकीर'},
+  'Streak': {'en_US': 'Streak', 'gu_IN': 'સ્ટ્રીક', 'hi_IN': 'स्ट्रीक'},
   'Referrals': {'en_US': 'Referrals', 'gu_IN': 'રેફરલ', 'hi_IN': 'रेफरल'},
   'achievementsCount': {
     'en_US': 'Achievements (@count)',
@@ -724,7 +724,13 @@ const _keys = <String, Map<String, String>>{
   // ---- Dynamic lookups: reward_transactions.type / .status, referrals.status ----
   'mining': {'en_US': 'mining', 'gu_IN': 'માઇનિંગ', 'hi_IN': 'माइनिंग'},
   'mission': {'en_US': 'mission', 'gu_IN': 'મિશન', 'hi_IN': 'मिशन'},
-  'streak': {'en_US': 'streak', 'gu_IN': 'સ્ટ્રીક', 'hi_IN': 'लकीर'},
+  'streak': {'en_US': 'streak', 'gu_IN': 'સ્ટ્રીક', 'hi_IN': 'स्ट्रीक'},
+  'level_up': {'en_US': 'level up', 'gu_IN': 'લેવલ અપ', 'hi_IN': 'लेवल अप'},
+  'streakBonusToast': {
+    'en_US': '🔥 Day @days streak! +@coins coins · +@xp XP',
+    'gu_IN': '🔥 Streak દિવસ @days! +@coins coins · +@xp XP',
+    'hi_IN': '🔥 Streak दिन @days! +@coins coins · +@xp XP',
+  },
   'referral': {'en_US': 'referral', 'gu_IN': 'રેફરલ', 'hi_IN': 'रेफरल'},
   'achievement': {'en_US': 'achievement', 'gu_IN': 'સિદ્ધિ', 'hi_IN': 'उपलब्धि'},
   'boost': {'en_US': 'boost', 'gu_IN': 'બૂસ્ટ', 'hi_IN': 'बूस्ट'},

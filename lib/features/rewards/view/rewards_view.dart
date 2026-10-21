@@ -120,6 +120,8 @@ class _RewardTile extends StatelessWidget {
         return Icons.rocket_launch_rounded;
       case 'ad_reward':
         return Icons.card_giftcard_rounded;
+      case 'level_up':
+        return Icons.star_rounded;
       default:
         return Icons.receipt_long_rounded;
     }
@@ -127,8 +129,10 @@ class _RewardTile extends StatelessWidget {
 
   bool get _isNegative => (transaction.amount as num) < 0;
 
-  String get _amountLabel =>
-      '${_isNegative ? '' : '+'}${Formatters.points(transaction.amount)}';
+  // Older streak check-ins paid XP only (amount 0) - say so instead of "+0".
+  String get _amountLabel => transaction.type == 'streak' && (transaction.amount as num) == 0
+      ? '+XP'
+      : '${_isNegative ? '' : '+'}${Formatters.points(transaction.amount)}';
 
   @override
   Widget build(BuildContext context) {

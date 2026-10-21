@@ -1,12 +1,13 @@
 // update-streak
 // Server decides whether today already counted, whether the streak
-// continues or resets, and grants the day's XP bonus (docs section 20).
+// continues or resets, and grants the day's XP + coin bonus (docs section 20).
 
 import { adminClient, getRequestUser } from "../_shared/client.ts";
 import { corsHeaders, errorResponse, jsonResponse } from "../_shared/cors.ts";
 import { grantXp } from "../_shared/xp.ts";
 
 const DAILY_XP = [100, 120, 150, 180, 220, 250, 300]; // day 1..7 of the cycle, day 7 = special bonus
+const DAILY_COINS = [1, 1, 2, 2, 3, 3, 5];
 
 function todayUtc(): string {
   return new Date().toISOString().slice(0, 10);
@@ -77,12 +78,13 @@ Deno.serve(async (req) => {
 
     const dayInCycle = ((newStreak - 1) % 7) + 1;
     const xpReward = DAILY_XP[dayInCycle - 1];
-    const { xp, level } = await grantXp(admin, user.id, xpReward);
+    const coinReward = DAILY_COINS[dayInCycle - 1];
+    const { xp, level, levelUpCoins } = await grantXp(admin, user.id, xpReward);
 
     await admin.from("reward_transactions").insert({
       user_id: user.id,
       type: "streak",
-      amount: 0,
+      amount: coinReward,
       source: `streak_day_${newStreak}`,
       status: "completed",
     });
@@ -93,6 +95,8 @@ Deno.serve(async (req) => {
       current_streak: newStreak,
       longest_streak: newLongest,
       xp_awarded: xpReward,
+      coins_awarded: coinReward,
+      level_up_coins: levelUpCoins,
       xp,
       level,
     });

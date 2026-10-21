@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../core/services/reminder_service.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/app_lifecycle_ticker.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/server_model/auth/model/profile_model.dart';
 import '../../../core/server_model/auth/repository/auth_repository.dart';
 import '../../../core/server_model/farm/model/farm_model.dart';
@@ -93,8 +94,18 @@ class HomeController extends GetxController with AppLifecycleTicker {
   /// Fire-and-forget: server decides if today already counted.
   Future<void> _checkInStreak() async {
     try {
-      await _streakRepository.checkIn();
+      final result = await _streakRepository.checkIn();
       streak.value = await _streakRepository.myStreak();
+      if (result['already_checked_in'] == false) {
+        // Show the day's bonus - otherwise players never notice it.
+        final coins = (result['coins_awarded'] as num? ?? 0) + (result['level_up_coins'] as num? ?? 0);
+        AppSnackbar.success('streakBonusToast'.trParams({
+          'days': '${result['current_streak'] ?? 1}',
+          'coins': Formatters.points(coins),
+          'xp': '${result['xp_awarded'] ?? 0}',
+        }));
+        availableBalance.value = await _rewardRepository.availableBalance();
+      }
       // The player is here today: move tomorrow's reminders forward.
       unawaited(ReminderService.instance.planDaily(streakDays: streak.value?.currentStreak ?? 0));
     } catch (_) {
