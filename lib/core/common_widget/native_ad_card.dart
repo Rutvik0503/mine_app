@@ -3,8 +3,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../constant/app_color.dart';
 import '../services/ads_service.dart';
 
-/// A native ad styled like the app's own list cards (Google's "small"
-/// template, which carries its own "Ad" badge). Takes no space until an ad
+/// A native ad styled like the app's own list cards (Google's "medium"
+/// template: media view for image/video creatives, plus its own "Ad" badge). Takes no space until an ad
 /// has actually loaded, and none at all if it fails - never a blank gap.
 class NativeAdCard extends StatefulWidget {
   final EdgeInsetsGeometry padding;
@@ -15,7 +15,8 @@ class NativeAdCard extends StatefulWidget {
 }
 
 class _NativeAdCardState extends State<NativeAdCard> {
-  static const double _height = 92;
+  // gnt_medium_template_view.xml is a fixed 350dp tall.
+  static const double _height = 350;
 
   NativeAd? _ad;
   bool _loaded = false;
@@ -46,7 +47,7 @@ class _NativeAdCardState extends State<NativeAdCard> {
         },
       ),
       nativeTemplateStyle: NativeTemplateStyle(
-        templateType: TemplateType.small,
+        templateType: TemplateType.medium,
         mainBackgroundColor: AppColor.surface,
         cornerRadius: 14,
         callToActionTextStyle: NativeTemplateTextStyle(
@@ -55,13 +56,23 @@ class _NativeAdCardState extends State<NativeAdCard> {
           style: NativeTemplateFontStyle.bold,
           size: 14,
         ),
+        // The template's headline TextView has a hard-coded white background.
         primaryTextStyle: NativeTemplateTextStyle(
           textColor: AppColor.textPrimary,
+          backgroundColor: AppColor.surface,
           style: NativeTemplateFontStyle.bold,
           size: 14,
         ),
-        secondaryTextStyle: NativeTemplateTextStyle(textColor: AppColor.textSecondary, size: 12),
-        tertiaryTextStyle: NativeTemplateTextStyle(textColor: AppColor.textSecondary, size: 12),
+        secondaryTextStyle: NativeTemplateTextStyle(
+          textColor: AppColor.textSecondary,
+          backgroundColor: AppColor.surface,
+          size: 12,
+        ),
+        tertiaryTextStyle: NativeTemplateTextStyle(
+          textColor: AppColor.textSecondary,
+          backgroundColor: AppColor.surface,
+          size: 12,
+        ),
       ),
     );
     _ad = ad;
@@ -87,7 +98,7 @@ class _NativeAdCardState extends State<NativeAdCard> {
           border: Border.all(color: AppColor.border),
         ),
         clipBehavior: Clip.antiAlias,
-        // The small template's own height. Its white outer frame is made
+        // The template's own height. Its white outer frame is made
         // transparent in res/drawable/gnt_outline_shape.xml.
         child: SizedBox(height: _height, child: AdWidget(ad: ad)),
       ),
