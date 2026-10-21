@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../../../core/common_widget/app_snackbar.dart';
 import '../../../core/constant/app_color.dart';
 import '../../farm/view_model/farm_controller.dart';
 import '../../home/view_model/home_controller.dart';
@@ -11,18 +12,24 @@ import '../../rewards/view_model/rewards_controller.dart';
 class MainNavController extends GetxController {
   final currentIndex = 0.obs;
 
+  bool _backHintShown = false;
   bool _exitDialogOpen = false;
 
-  /// System back: other tabs return to Home; on Home it asks before
-  /// leaving the app.
+  /// System back: other tabs return to Home; on Home the first press shows
+  /// a hint and the next one asks before leaving the app.
   Future<void> handleBack() async {
     if (currentIndex.value != 0) {
       changeTab(0);
       return;
     }
+    if (!_backHintShown) {
+      _backHintShown = true;
+      AppSnackbar.info('pressBackAgainToExit'.tr);
+      return;
+    }
     if (_exitDialogOpen) return;
     _exitDialogOpen = true;
-    if (Get.isSnackbarOpen) Get.closeCurrentSnackbar();
+    if (Get.isSnackbarOpen) Get.closeCurrentSnackbar(); // the hint
     final exit = await Get.dialog<bool>(
       AlertDialog(
         title: Text('exitAppTitle'.tr),
@@ -38,6 +45,7 @@ class MainNavController extends GetxController {
       ),
     );
     _exitDialogOpen = false;
+    _backHintShown = false;
     if (exit == true) await SystemNavigator.pop();
   }
 
@@ -47,6 +55,7 @@ class MainNavController extends GetxController {
   /// shows stale data until a manual pull-to-refresh or hot reload.
   void changeTab(int index) {
     currentIndex.value = index;
+    _backHintShown = false;
     switch (index) {
       case 0:
         Get.find<HomeController>().loadDashboard();
