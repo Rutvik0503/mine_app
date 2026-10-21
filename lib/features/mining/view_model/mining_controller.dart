@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import '../../../core/server_model/auth/repository/auth_repository.dart';
 import '../../../core/services/reminder_service.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/common_widget/app_snackbar.dart';
 import '../../../core/constant/app_string.dart';
 import '../../../core/server_model/boost/model/user_boost_model.dart';
@@ -53,7 +54,7 @@ class MiningController extends GetxController with AppLifecycleTicker {
       extraTimePrice.value = package.priceLabel;
       final products = await _storeRepository.playProducts([package]);
       final price = products[package.playProductId]?.price;
-      if (price != null) extraTimePrice.value = price;
+      if (price != null) extraTimePrice.value = Formatters.storePrice(price);
     } catch (_) {
       // Button keeps the fallback label.
     }

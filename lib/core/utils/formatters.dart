@@ -34,5 +34,9 @@ class Formatters {
     return 'Ends in under an hour'.tr;
   }
 
+  /// Play's localized price without a zero fraction ("₹9,999.00" -> "₹9,999")
+  /// so it fits on one line in price buttons.
+  static String storePrice(String price) => price.replaceFirst(RegExp(r'[.,]00(?=\D*$)'), '');
+
   static String percent(double value) => '${(value * 100).clamp(0, 100).toStringAsFixed(0)}%';
 }

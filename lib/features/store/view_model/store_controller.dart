@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../../../core/common_widget/app_snackbar.dart';
 import '../../../core/server_model/store/model/store_package_model.dart';
 import '../../../core/server_model/store/repository/store_repository.dart';
+import '../../../core/utils/formatters.dart';
 
 class StoreController extends GetxController {
   final StoreRepository _storeRepository = StoreRepository();
@@ -24,7 +25,7 @@ class StoreController extends GetxController {
     try {
       packages.value = await _storeRepository.packages();
       final products = await _storeRepository.playProducts(packages);
-      playPrices.value = {for (final e in products.entries) e.key: e.value.price};
+      playPrices.value = {for (final e in products.entries) e.key: Formatters.storePrice(e.value.price)};
     } catch (_) {
       // Prices fall back to our own labels; buying still checks with Play.
     } finally {
