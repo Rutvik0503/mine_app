@@ -82,12 +82,13 @@ class _NativeAdCardState extends State<NativeAdCard> {
       padding: widget.padding,
       child: Container(
         decoration: BoxDecoration(
+          color: AppColor.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppColor.border),
         ),
         clipBehavior: Clip.antiAlias,
-        // The small template's own height - any taller and the native view
-        // shows a white band around it.
+        // The small template's own height. Its white outer frame is made
+        // transparent in res/drawable/gnt_outline_shape.xml.
         child: SizedBox(height: _height, child: AdWidget(ad: ad)),
       ),
     );
