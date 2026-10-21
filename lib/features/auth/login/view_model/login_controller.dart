@@ -15,14 +15,17 @@ class LoginController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final isLoading = false.obs;
+  // Separate so only the tapped button spins; the other is just disabled.
+  final isEmailLoading = false.obs;
+  final isGoogleLoading = false.obs;
+  bool get isBusy => isEmailLoading.value || isGoogleLoading.value;
   final obscurePassword = true.obs;
 
   void toggleObscure() => obscurePassword.value = !obscurePassword.value;
 
   Future<void> login() async {
-    if (!formKey.currentState!.validate()) return;
-    isLoading.value = true;
+    if (isBusy || !formKey.currentState!.validate()) return;
+    isEmailLoading.value = true;
     try {
       await _authRepository.login(
         email: emailController.text.trim(),
@@ -37,7 +40,7 @@ class LoginController extends GetxController {
       debugPrint('Login failed: $e');
       AppSnackbar.error('Login failed. Please try again.'.tr);
     } finally {
-      isLoading.value = false;
+      isEmailLoading.value = false;
     }
   }
 
@@ -46,8 +49,9 @@ class LoginController extends GetxController {
       AppSnackbar.info('Google Sign-In is not configured yet - see README "Google Sign-In setup".'.tr);
       return;
     }
+    if (isBusy) return;
 
-    isLoading.value = true;
+    isGoogleLoading.value = true;
     try {
       // Requires a Google Cloud "Web application" OAuth client (registered in
       // Supabase Auth > Providers > Google) plus an "Android" OAuth client
@@ -76,7 +80,7 @@ class LoginController extends GetxController {
       debugPrint('Google sign-in failed: $e');
       AppSnackbar.error('Google sign-in failed. Make sure it is configured in Supabase Auth.'.tr);
     } finally {
-      isLoading.value = false;
+      isGoogleLoading.value = false;
     }
   }
 

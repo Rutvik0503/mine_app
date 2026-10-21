@@ -67,8 +67,8 @@ class LoginView extends GetView<LoginController> {
                 Obx(
                   () => AppButton(
                     label: AppString.login.tr,
-                    loading: controller.isLoading.value,
-                    onPressed: controller.login,
+                    loading: controller.isEmailLoading.value,
+                    onPressed: controller.isGoogleLoading.value ? null : controller.login,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -88,8 +88,8 @@ class LoginView extends GetView<LoginController> {
                     label: AppString.continueWithGoogle.tr,
                     outlined: true,
                     icon: Icons.g_mobiledata_rounded,
-                    loading: controller.isLoading.value,
-                    onPressed: controller.loginWithGoogle,
+                    loading: controller.isGoogleLoading.value,
+                    onPressed: controller.isEmailLoading.value ? null : controller.loginWithGoogle,
                   ),
                 ),
                 // Sign in with Apple stays hidden until it's configured (Apple
