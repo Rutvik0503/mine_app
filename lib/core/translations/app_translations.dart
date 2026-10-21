@@ -547,11 +547,6 @@ const _keys = <String, Map<String, String>>{
   },
   'Cancel': {'en_US': 'Cancel', 'gu_IN': 'રદ કરો', 'hi_IN': 'रद्द करें'},
   'Exit': {'en_US': 'Exit', 'gu_IN': 'બહાર નીકળો', 'hi_IN': 'बाहर निकलें'},
-  'pressBackAgainToExit': {
-    'en_US': 'Press back again to exit',
-    'gu_IN': 'બહાર નીકળવા ફરી back દબાવો',
-    'hi_IN': 'बाहर निकलने के लिए फिर से back दबाएं',
-  },
   'exitAppTitle': {'en_US': 'Exit app?', 'gu_IN': 'એપ બંધ કરવી છે?', 'hi_IN': 'ऐप बंद करें?'},
   'exitAppMessage': {
     'en_US': 'Your mining keeps running while the app is closed.',
