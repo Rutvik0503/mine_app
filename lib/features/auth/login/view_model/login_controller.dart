@@ -56,6 +56,9 @@ class LoginController extends GetxController {
         scopes: ['email', 'profile'],
         serverClientId: ApiConstant.googleWebClientId,
       );
+      // Forget any remembered account first so the picker always shows -
+      // otherwise Google silently signs back in with the last one used.
+      await googleSignIn.signOut();
       final account = await googleSignIn.signIn();
       if (account == null) return;
       final auth = await account.authentication;
