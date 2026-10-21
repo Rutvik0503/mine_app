@@ -32,6 +32,7 @@ class MainNavController extends GetxController {
     _lastHomeBack = null;
     if (_exitDialogOpen) return;
     _exitDialogOpen = true;
+    if (Get.isSnackbarOpen) Get.closeCurrentSnackbar(); // the "press back again" hint
     final exit = await Get.dialog<bool>(
       AlertDialog(
         title: Text('exitAppTitle'.tr),
