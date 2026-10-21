@@ -782,7 +782,7 @@ const _keys = <String, Map<String, String>>{
   'payRupees': {'en_US': 'Pay ₹@price', 'gu_IN': '₹@price ચૂકવો', 'hi_IN': '₹@price का भुगतान करें'},
   'payCoins': {'en_US': 'Pay @coins coins', 'gu_IN': '@coins કોઇન ચૂકવો', 'hi_IN': '@coins कॉइन से भुगतान करें'},
   'perDay': {'en_US': '₹@price/day', 'gu_IN': '₹@price/દિવસ', 'hi_IN': '₹@price/दिन'},
-  'fromPrice': {'en_US': 'From ₹@price', 'gu_IN': '₹@price થી', 'hi_IN': '₹@price से'},
+  'fromCoins': {'en_US': 'From @price coins', 'gu_IN': '@price coins થી', 'hi_IN': '@price coins से'},
   'minerRented': {
     'en_US': '@name added to your farm!',
     'gu_IN': '@name તમારા ફાર્મમાં ઉમેરાયું!',

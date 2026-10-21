@@ -280,7 +280,7 @@ class _MinerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final cheapest = machine.plans.isEmpty
         ? null
-        : machine.plans.reduce((a, b) => a.pricePaise <= b.pricePaise ? a : b);
+        : machine.plans.reduce((a, b) => a.priceCoins <= b.priceCoins ? a : b);
     final isActive = owned != null && status != MinerStatus.expired;
     final isExpired = status == MinerStatus.expired;
     // Green while the miner is in the running session, amber while it waits
@@ -365,7 +365,7 @@ class _MinerTile extends StatelessWidget {
                     RentalTimeLeft(machine: owned!, showDate: false),
                   ],
                 ] else if (cheapest != null)
-                  AppText.caption('fromPrice'.trParams({'price': '${cheapest.priceRupees}'})),
+                  AppText.caption('fromCoins'.trParams({'price': Formatters.points(cheapest.priceCoins)})),
               ],
             ),
           ),

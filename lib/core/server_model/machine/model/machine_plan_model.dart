@@ -21,8 +21,6 @@ class MachinePlanModel {
     required this.isActive,
   });
 
-  int get priceRupees => (pricePaise / 100).round();
-  double get rupeesPerDay => pricePaise / 100 / durationDays;
 
   factory MachinePlanModel.fromJson(Map<String, dynamic> json) => MachinePlanModel(
         id: json['id'] as String,

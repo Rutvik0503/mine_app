@@ -77,7 +77,7 @@ class RewardsView extends GetView<RewardsController> {
                 child: ElevatedButton.icon(
                   onPressed: controller.goToStore,
                   icon: const Icon(Icons.toll_rounded),
-                  label: Text('Buy Points'.tr),
+                  label: Text('Buy Coins'.tr),
                 ),
               ),
               const SizedBox(height: 24),
