@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../constant/api_constant.dart';
 import '../../../constant/table_constant.dart';
@@ -29,7 +30,16 @@ class AuthService {
     return _client.auth.updateUser(UserAttributes(password: newPassword));
   }
 
-  Future<void> signOut() => _client.auth.signOut();
+  Future<void> signOut() async {
+    await _client.auth.signOut();
+    // Also forget the Google account, or the next "Continue with Google"
+    // silently reuses it instead of showing the account picker.
+    try {
+      await GoogleSignIn().signOut();
+    } catch (_) {
+      // Not signed in with Google - nothing to clear.
+    }
+  }
 
   /// Permanently deletes the signed-in user's account server-side.
   Future<void> deleteAccount() => SupabaseService.invoke(ApiConstant.fnDeleteAccount);
