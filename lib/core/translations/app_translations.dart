@@ -546,6 +546,18 @@ const _keys = <String, Map<String, String>>{
     'hi_IN': 'लेवल @level पर अपग्रेड करने में @cost coins लगते हैं।\n\nआपके पास @balance coins हैं - @shortfall और चाहिए।',
   },
   'Cancel': {'en_US': 'Cancel', 'gu_IN': 'રદ કરો', 'hi_IN': 'रद्द करें'},
+  'Exit': {'en_US': 'Exit', 'gu_IN': 'બહાર નીકળો', 'hi_IN': 'बाहर निकलें'},
+  'pressBackAgainToExit': {
+    'en_US': 'Press back again to exit',
+    'gu_IN': 'બહાર નીકળવા ફરી back દબાવો',
+    'hi_IN': 'बाहर निकलने के लिए फिर से back दबाएं',
+  },
+  'exitAppTitle': {'en_US': 'Exit app?', 'gu_IN': 'એપ બંધ કરવી છે?', 'hi_IN': 'ऐप बंद करें?'},
+  'exitAppMessage': {
+    'en_US': 'Your mining keeps running while the app is closed.',
+    'gu_IN': 'એપ બંધ હોય ત્યારે પણ તમારું mining ચાલુ રહેશે.',
+    'hi_IN': 'ऐप बंद होने पर भी आपकी mining चालू रहेगी।',
+  },
   'Delete': {'en_US': 'Delete', 'gu_IN': 'ડિલીટ કરો', 'hi_IN': 'हटाएं'},
   'Ad privacy choices': {'en_US': 'Ad privacy choices', 'gu_IN': 'Ads ની પ્રાઇવસી પસંદગી', 'hi_IN': 'Ads की प्राइवेसी पसंद'},
   'Delete your account?': {
