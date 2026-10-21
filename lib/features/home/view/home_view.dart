@@ -396,57 +396,59 @@ class _StreakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final streak = controller.streak.value;
-    final current = streak?.currentStreak ?? 0;
     const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    return GestureDetector(
-      onTap: controller.goToStreak,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColor.surface,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColor.border),
+    // Own Obx: the streak check-in finishes after the dashboard has built.
+    return Obx(() {
+      final current = controller.streak.value?.currentStreak ?? 0;
+      return GestureDetector(
+        onTap: controller.goToStreak,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColor.surface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColor.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.local_fire_department_rounded,
+                    color: AppColor.warning,
+                  ),
+                  const SizedBox(width: 6),
+                  AppText(
+                    'streakDays'.trParams({'count': '$current'}),
+                    weight: FontWeight.w700,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(7, (i) {
+                  final filled =
+                      i < (current % 7 == 0 && current > 0 ? 7 : current % 7);
+                  return Column(
+                    children: [
+                      AppText.caption(days[i]),
+                      const SizedBox(height: 6),
+                      Icon(
+                        filled ? Icons.check_circle : Icons.circle_outlined,
+                        size: 18,
+                        color: filled ? AppColor.success : AppColor.textDisabled,
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(
-                  Icons.local_fire_department_rounded,
-                  color: AppColor.warning,
-                ),
-                const SizedBox(width: 6),
-                AppText(
-                  'streakDays'.trParams({'count': '$current'}),
-                  weight: FontWeight.w700,
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(7, (i) {
-                final filled =
-                    i < (current % 7 == 0 && current > 0 ? 7 : current % 7);
-                return Column(
-                  children: [
-                    AppText.caption(days[i]),
-                    const SizedBox(height: 6),
-                    Icon(
-                      filled ? Icons.check_circle : Icons.circle_outlined,
-                      size: 18,
-                      color: filled ? AppColor.success : AppColor.textDisabled,
-                    ),
-                  ],
-                );
-              }),
-            ),
-          ],
-        ),
-      ),
-    );
+      );
+    });
   }
 }
 
