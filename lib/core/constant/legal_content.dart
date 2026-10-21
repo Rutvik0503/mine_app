@@ -1,6 +1,6 @@
 /// Draft legal/help copy for the in-app Privacy Policy, Terms of Service and
 /// Help & Support pages (Settings screen). Written to be safe for a virtual/
-/// simulated mining game with real-money purchases of virtual currency only
+/// simulated mining app with real-money purchases of virtual currency only
 /// (no real crypto, no real withdrawal) - have this reviewed by a lawyer
 /// before shipping to production, this is a functional draft, not legal
 /// advice.
@@ -10,12 +10,12 @@ class LegalContent {
   static const String supportEmail = 'virtualminingempire1@gmail.com';
 
   static const String privacyPolicy = '''
-Last updated: 19 October 2026
+Last updated: 21 October 2026
 
-We collect only what's needed to run your account and the game:
+We collect only what's needed to run your account and the app:
 
 • Account info: your email address, username, and - if you sign in with Google - the name and email Google shares with us.
-• Gameplay data: mining sessions, coin balance, miners, farm progress, missions, streaks, referrals and leaderboard standing.
+• App data: mining sessions, coin balance, miners, farm progress, missions, streaks, referrals and leaderboard standing.
 • Purchase records: which coin packs or extra mining time you bought and when. Payments are handled by Google Play - we never see or store your card, UPI or bank details.
 • Device and usage data: crash reports and basic analytics, used to fix bugs and improve the app.
 • Advertising ID: used by Google AdMob to show and measure ads.
@@ -32,21 +32,21 @@ Questions: virtualminingempire1@gmail.com
 ''';
 
   static const String termsOfService = '''
-Last updated: 19 October 2026
+Last updated: 21 October 2026
 
-1. Virtual game, not real mining. "Mining", "hashrate", "farms" and "miners" in this app are game mechanics only. No real cryptocurrency mining takes place on your device or anywhere else, and this app is not affiliated with Bitcoin or any cryptocurrency network or exchange.
+1. Virtual simulation, not real mining. "Mining", "hashrate", "farms" and "miners" in this app are simulation features only. No real cryptocurrency mining takes place on your device or anywhere else, and this app is not affiliated with Bitcoin or any cryptocurrency network or exchange.
 
-2. Coins have no real-world value. In-game coins are virtual, exist only inside this app, and cannot be exchanged, redeemed, transferred or withdrawn for real money, cryptocurrency or anything else of value.
+2. Coins have no real-world value. In-app coins are virtual, exist only inside this app, and cannot be exchanged, redeemed, transferred or withdrawn for real money, cryptocurrency or anything else of value.
 
 3. Purchases. In-app purchases are processed by Google Play and buy virtual coins or extra mining time for entertainment only. Refunds follow Google Play's refund policy and applicable law.
 
-4. Ads. The app shows ads. Watching an optional rewarded ad gives small in-game rewards (coins, boosts or mining time) - never real money.
+4. Ads. The app shows ads. Watching an optional rewarded ad gives small in-app rewards (coins, boosts or mining time) - never real money.
 
 5. No guaranteed earnings. Nothing in this app promises or implies real income, returns or profit, and it is not an investment of any kind.
 
 6. Your responsibility. You are responsible for using this app in line with the laws where you live.
 
-7. Changes to the game. We may change prices, rewards, session length or any other part of the virtual economy at any time to keep the game balanced.
+7. Changes to the app. We may change prices, rewards, session length or any other part of the virtual economy at any time to keep the virtual economy balanced.
 
 8. Account suspension. Accounts found exploiting bugs, manipulating rewards or breaking these terms may be suspended or closed.
 
